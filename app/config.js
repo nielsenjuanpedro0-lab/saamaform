@@ -6,5 +6,5 @@
 //
 // NUNCA pongas acá la "service_role key" — esa saltea todas las políticas.
 
-export const SUPABASE_URL = "https://TU-PROYECTO.supabase.co";
-export const SUPABASE_ANON_KEY = "TU-ANON-KEY";
+export const SUPABASE_URL = "https://czvflamhjyrmksativiq.supabase.co";
+export const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN6dmZsYW1oanlybWtzYXRpdmlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY4MDIwMjgsImV4cCI6MjEwMjM3ODAyOH0.uEuURP9QwRhpz6ytKaVos91MFbxfNi843bsGGolBliQ";
