@@ -226,7 +226,7 @@
 </div>
 
 <script type="module">
-  import { db, configurado } from "./app/db.js";
+  import { dbPanel as db, configurado } from "./app/db.js";
   import { SECCIONES, CAMPOS, ESTADOS, etiquetaEstado, mostrarValor, formatearMomento } from "./app/ficha.js";
 
   const puerta = document.getElementById("puerta");
@@ -257,13 +257,19 @@
     cargar();
   };
 
+  // Primero se pinta el login, siempre y sin esperar a nadie. Si hay sesión
+  // guardada, onAuthStateChange la trae enseguida y cambia al panel; así una
+  // demora de Supabase nunca deja la pantalla en blanco.
+  mostrarLogin();
+
   if (!configurado) {
-    puerta.classList.add("show");
     errLogin.textContent = "Falta completar app/config.js con los datos del proyecto Supabase.";
     errLogin.classList.add("show");
   } else {
-    const { data } = await db.auth.getSession();
-    data.session ? mostrarPanel(data.session) : mostrarLogin();
+    // Dispara al arrancar (INITIAL_SESSION) y en cada login o cierre de sesión.
+    db.auth.onAuthStateChange((_evento, sesion) => {
+      sesion ? mostrarPanel(sesion) : mostrarLogin();
+    });
   }
 
   document.getElementById("login").addEventListener("submit", async e => {
@@ -273,7 +279,7 @@
     boton.disabled = true;
     boton.textContent = "Entrando…";
 
-    const { data, error } = await db.auth.signInWithPassword({
+    const { error } = await db.auth.signInWithPassword({
       email: document.getElementById("email").value.trim(),
       password: document.getElementById("clave").value
     });
@@ -288,15 +294,14 @@
       errLogin.classList.add("show");
       return;
     }
+    // onAuthStateChange recibe el SIGNED_IN y abre el panel.
     document.getElementById("clave").value = "";
-    mostrarPanel(data.session);
   });
 
   document.getElementById("salir").addEventListener("click", async () => {
-    await db.auth.signOut();
     fichas = [];
     seleccionada = null;
-    mostrarLogin();
+    await db.auth.signOut();   // onAuthStateChange devuelve la pantalla de login
   });
 
   // ---------- Datos ----------
