@@ -60,10 +60,10 @@ export const CAMPOS = SECCIONES.flatMap(s => s.campos);
 export const OBLIGATORIOS = CAMPOS.filter(c => c.req).map(c => c.col);
 
 export const ESTADOS = [
-  { valor: "nueva", label: "Nueva" },
-  { valor: "contactada", label: "Contactada" },
-  { valor: "en_terapia", label: "En terapia" },
-  { valor: "cerrada", label: "Cerrada" }
+  { valor: "nueva", label: "Nueva", plural: "Nuevas" },
+  { valor: "contactada", label: "Contactada", plural: "Contactadas" },
+  { valor: "en_terapia", label: "En terapia", plural: "En terapia" },
+  { valor: "cerrada", label: "Cerrada", plural: "Cerradas" }
 ];
 
 export const etiquetaEstado = valor =>

@@ -7,19 +7,14 @@
 
   /* ---------- Puerta de acceso ---------- */
 
-  #puerta {
-    min-height: 100vh;
-    display: none;
-    place-items: center;
-    padding: 24px;
-  }
+  #puerta { min-height: 100vh; display: none; place-items: center; padding: 24px; }
   #puerta.show { display: grid; }
   #puerta form {
     width: 100%;
-    max-width: 380px;
+    max-width: 370px;
     background: var(--surface);
     border: 1px solid var(--line);
-    border-radius: 4px;
+    border-radius: 6px;
     box-shadow: var(--shadow);
     padding: 34px 30px;
     display: flex;
@@ -27,60 +22,59 @@
     gap: 18px;
   }
   #puerta .marca { text-align: center; display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
-  #puerta .mark { font-size: 44px; }
+  #puerta .mark { font-size: 42px; }
 
-  /* ---------- Estructura del panel ---------- */
+  /* ---------- Estructura ---------- */
 
-  #panel { display: none; min-height: 100vh; flex-direction: column; }
+  #panel { display: none; height: 100vh; flex-direction: column; }
   #panel.show { display: flex; }
 
   .barra {
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: 20px;
     flex-wrap: wrap;
-    padding: 16px 24px;
+    padding: 0 20px;
+    height: 58px;
+    flex: none;
     border-bottom: 1px solid var(--line);
     background: var(--surface);
-    position: sticky;
-    top: 0;
-    z-index: 5;
   }
-  .barra .mark { font-size: 26px; }
-  .barra .quien { margin-left: auto; font-size: 13px; color: var(--ink-faint); }
+  .barra .mark { font-size: 23px; }
+  .barra-fin { margin-left: auto; display: flex; align-items: center; gap: 14px; }
+  .quien { font-size: 13px; color: var(--ink-faint); }
 
-  .resumen { display: flex; gap: 8px; flex-wrap: wrap; }
+  /* Contadores por estado, que además filtran */
+  .resumen { display: flex; gap: 6px; flex-wrap: wrap; }
   .tarjeta {
     display: flex;
     align-items: baseline;
-    gap: 7px;
-    padding: 5px 12px;
-    border: 1px solid var(--line);
-    border-radius: 3px;
-    background: var(--surface-2);
-    font-size: 12px;
-    letter-spacing: .06em;
-    text-transform: uppercase;
-    color: var(--ink-soft);
+    gap: 6px;
+    padding: 5px 11px;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    background: transparent;
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--ink-faint);
     cursor: pointer;
   }
-  .tarjeta:hover { border-color: var(--violet-soft); }
-  .tarjeta[aria-pressed="true"] { border-color: var(--violet); background: var(--violet-wash); color: var(--violet); }
-  .tarjeta b { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .tarjeta:hover { background: var(--surface-2); color: var(--ink-soft); }
+  .tarjeta b { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink-soft); }
+  .tarjeta[aria-pressed="true"] { background: var(--violet-wash); border-color: var(--violet-soft); color: var(--violet); }
   .tarjeta[aria-pressed="true"] b { color: var(--violet); }
+  .tarjeta.cero { opacity: .5; }
 
-  .cuerpo { display: grid; grid-template-columns: minmax(280px, 360px) 1fr; flex: 1; min-height: 0; }
-  @media (max-width: 860px) { .cuerpo { grid-template-columns: 1fr; } }
+  .cuerpo { display: grid; grid-template-columns: minmax(260px, 330px) 1fr; flex: 1; min-height: 0; }
+  @media (max-width: 860px) { .cuerpo { grid-template-columns: 1fr; } #panel { height: auto; } }
 
   /* ---------- Listado ---------- */
 
-  .listado {
-    border-right: 1px solid var(--line);
-    display: flex;
-    flex-direction: column;
-    min-height: 0;
-  }
-  .buscador { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+  .listado { border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+  .buscador { padding: 12px 14px; border-bottom: 1px solid var(--line); flex: none; }
+  .buscador input { padding: 8px 12px; font-size: 14px; border-radius: 999px; }
   .lista { overflow-y: auto; flex: 1; }
 
   .item {
@@ -89,20 +83,20 @@
     background: none;
     border: none;
     border-bottom: 1px solid var(--line);
-    border-left: 3px solid transparent;
+    border-left: 2px solid transparent;
     border-radius: 0;
-    padding: 14px 18px;
+    padding: 12px 16px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 4px;
     font-weight: 400;
   }
   .item:hover { background: var(--surface); }
   .item[aria-current="true"] { background: var(--surface); border-left-color: var(--violet); }
-  .item .nom { font-weight: 600; font-size: 15px; }
-  .item .meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .item .nom { font-weight: 600; font-size: 14.5px; }
+  .item .meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
   .item .resumen-motivo {
-    font-size: 13px;
+    font-size: 12.5px;
     color: var(--ink-soft);
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -110,72 +104,110 @@
     overflow: hidden;
   }
 
-  .vacio { padding: 40px 24px; text-align: center; color: var(--ink-faint); font-size: 14px; }
+  .vacio { padding: 36px 22px; text-align: center; color: var(--ink-faint); font-size: 14px; }
 
   /* ---------- Detalle ---------- */
 
-  .detalle { overflow-y: auto; padding: 30px 34px 80px; }
-  @media (max-width: 860px) { .detalle { padding: 24px 20px 60px; } }
+  .detalle { overflow-y: auto; }
+  .detalle-interior { max-width: 860px; padding: 26px 32px 80px; }
+  @media (max-width: 860px) { .detalle-interior { padding: 22px 18px 60px; } }
 
-  .detalle-cabecera { display: flex; flex-direction: column; gap: 6px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
-  .detalle-cabecera h2 {
+  .detalle-cabecera { display: flex; flex-direction: column; gap: 8px; }
+  .titulo-fila { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .titulo-fila h2 {
     font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-    font-size: 30px;
+    font-size: 27px;
     margin: 0;
     letter-spacing: .01em;
+    text-wrap: balance;
   }
-  .detalle-cabecera .datos { font-size: 13px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .contacto { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--ink-faint); }
+  .contacto a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line-strong); }
+  .contacto a:hover { color: var(--violet); border-bottom-color: var(--violet); }
+  .contacto .sep { color: var(--line-strong); }
+  .contacto time { font-variant-numeric: tabular-nums; }
 
+  /* Barra de seguimiento: una grilla explícita, sin huecos muertos */
   .seguimiento {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 18px;
-    align-items: flex-end;
-    margin: 22px 0 8px;
-    padding: 20px 22px;
+    display: grid;
+    grid-template-columns: 190px 1fr;
+    grid-template-areas:
+      "estado acciones"
+      "notas  notas";
+    gap: 16px 20px;
+    align-items: end;
+    margin: 22px 0 6px;
+    padding: 18px 20px;
     background: var(--violet-wash);
     border: 1px solid var(--line);
-    border-radius: 4px;
+    border-radius: 6px;
   }
-  .seguimiento .field { flex: 1 1 100%; }
-  .seguimiento .estado-campo { flex: 0 0 200px; }
-  .seguimiento .acciones { display: flex; gap: 10px; align-items: center; margin-left: auto; }
-  #guardado { font-size: 13px; color: var(--sage-deep); min-height: 18px; }
+  .seguimiento .estado-campo { grid-area: estado; }
+  .seguimiento .notas-campo  { grid-area: notas; }
+  .seguimiento .acciones     { grid-area: acciones; display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
+  .seguimiento textarea { min-height: 78px; background: var(--surface); }
+  #guardado { font-size: 13px; color: var(--sage-deep); }
+  @media (max-width: 620px) {
+    .seguimiento { grid-template-columns: 1fr; grid-template-areas: "estado" "acciones" "notas"; }
+    .seguimiento .acciones { justify-content: flex-start; }
+  }
 
-  .grupo { margin-top: 30px; }
+  /* Ficha: dos columnas para respuestas cortas, ancho completo para los relatos */
+  .controles-vista {
+    display: flex;
+    justify-content: flex-end;
+    margin: 26px 0 -6px;
+  }
+  .interruptor { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-faint); cursor: pointer; font-weight: 400; }
+  .interruptor input { width: 15px; height: 15px; accent-color: var(--violet); margin: 0; }
+
+  .grupo { margin-top: 26px; }
   .grupo h3 {
     font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-    font-size: 13px;
+    font-size: 12.5px;
     letter-spacing: .18em;
     text-transform: uppercase;
     color: var(--violet);
     margin: 0 0 14px;
-    padding-bottom: 8px;
+    padding-bottom: 7px;
     border-bottom: 1px solid var(--line);
   }
-  .dato { margin-bottom: 16px; }
+  .grupo.todo-vacio { display: none; }
+  .grupo.todo-vacio.ver { display: block; }
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 16px 26px;
+    align-items: start;
+  }
+  .dato.largo { grid-column: 1 / -1; }
   .dato dt {
-    font-size: 12px;
-    letter-spacing: .05em;
+    font-size: 11px;
+    letter-spacing: .07em;
     text-transform: uppercase;
     color: var(--ink-faint);
     margin-bottom: 3px;
   }
-  .dato dd { margin: 0; white-space: pre-wrap; text-wrap: pretty; max-width: 68ch; }
-  .dato dd.sin { color: var(--ink-faint); font-style: italic; }
-  dl { margin: 0; }
+  .dato dd { margin: 0; white-space: pre-wrap; text-wrap: pretty; max-width: 70ch; }
+  .dato.vacio-campo { display: none; }
+  .dato.vacio-campo.ver { display: block; }
+  .dato.vacio-campo dd { color: var(--ink-faint); font-style: italic; }
 
-  .peligro { margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; gap: 12px; align-items: center; }
-  .peligro .confirmar { background: var(--danger); border-color: var(--danger); color: #fff; }
+  .peligro { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .peligro .confirmar { background: var(--danger); border-color: var(--danger); color: var(--on-violet); }
 
   .sin-seleccion { display: grid; place-items: center; height: 100%; color: var(--ink-faint); text-align: center; padding: 40px; }
 
   @media print {
-    .barra, .listado, .seguimiento .acciones, .peligro, #puerta { display: none !important; }
-    .cuerpo { grid-template-columns: 1fr; }
-    .detalle { overflow: visible; padding: 0; }
+    .barra, .listado, .seguimiento .acciones, .peligro, .controles-vista, #puerta { display: none !important; }
+    .cuerpo, #panel { display: block; height: auto; }
+    .detalle { overflow: visible; }
+    .detalle-interior { max-width: none; padding: 0; }
     body { background: #fff; color: #000; }
     .seguimiento { background: none; border: 1px solid #ccc; }
+    .dato.vacio-campo { display: none !important; }
   }
 </style>
 
@@ -206,15 +238,17 @@
   <div class="barra">
     <span class="mark">SAAMA</span>
     <div class="resumen" id="resumen"></div>
-    <span class="quien" id="quien"></span>
-    <button type="button" class="mini" id="salir">Salir</button>
+    <div class="barra-fin">
+      <button type="button" class="ghost compacto" id="exportar">Exportar CSV</button>
+      <span class="quien" id="quien"></span>
+      <button type="button" class="mini" id="salir">Salir</button>
+    </div>
   </div>
 
   <div class="cuerpo">
     <div class="listado">
       <div class="buscador">
-        <input type="search" id="buscar" placeholder="Buscar por nombre, motivo o teléfono">
-        <button type="button" class="ghost" id="exportar">Exportar a CSV</button>
+        <input type="search" id="buscar" placeholder="Buscar nombre, motivo o teléfono">
       </div>
       <div class="lista" id="lista"></div>
     </div>
@@ -239,6 +273,7 @@
   let fichas = [];
   let seleccionada = null;
   let filtroEstado = null;
+  let verVacios = false;
 
   const crear = (etiqueta, clase, texto) => {
     const el = document.createElement(etiqueta);
@@ -331,17 +366,20 @@
     });
   };
 
-  // ---------- Resumen por estado ----------
+  // ---------- Contadores ----------
 
   function pintarResumen() {
     const cont = document.getElementById("resumen");
     cont.replaceChildren();
     ESTADOS.forEach(estado => {
       const cantidad = fichas.filter(f => f.estado === estado.valor).length;
-      const boton = crear("button", "tarjeta");
+      const boton = crear("button", "tarjeta" + (cantidad ? "" : " cero"));
       boton.type = "button";
       boton.setAttribute("aria-pressed", filtroEstado === estado.valor ? "true" : "false");
-      boton.append(crear("b", null, cantidad), crear("span", null, estado.label));
+      boton.append(
+        crear("b", null, cantidad),
+        crear("span", null, cantidad === 1 ? estado.label : estado.plural)
+      );
       boton.addEventListener("click", () => {
         filtroEstado = filtroEstado === estado.valor ? null : estado.valor;
         pintarResumen();
@@ -370,8 +408,10 @@
       if (seleccionada && seleccionada.id === f.id) item.setAttribute("aria-current", "true");
 
       const meta = crear("div", "meta");
-      const pill = crear("span", "pill " + f.estado, etiquetaEstado(f.estado));
-      meta.append(pill, crear("span", null, formatearMomento(f.creado_en)));
+      meta.append(
+        crear("span", "pill " + f.estado, etiquetaEstado(f.estado)),
+        crear("span", null, formatearMomento(f.creado_en))
+      );
 
       item.append(crear("span", "nom", f.nombre), meta);
       if (f.motivo) item.append(crear("span", "resumen-motivo", f.motivo));
@@ -389,20 +429,39 @@
 
   function pintarDetalle() {
     const f = seleccionada;
-    detalle.replaceChildren();
+    const caja = crear("div", "detalle-interior");
 
+    // Cabecera: nombre, estado y vías de contacto en las que se puede tocar
     const cabecera = crear("div", "detalle-cabecera");
-    cabecera.append(crear("h2", null, f.nombre));
-    const contacto = [f.telefono, f.email].filter(Boolean).join(" · ");
-    cabecera.append(crear("p", "datos", "Recibida el " + formatearMomento(f.creado_en) + (contacto ? " · " + contacto : "")));
-    detalle.append(cabecera);
+    const titulo = crear("div", "titulo-fila");
+    titulo.append(crear("h2", null, f.nombre), crear("span", "pill " + f.estado, etiquetaEstado(f.estado)));
 
-    // Seguimiento: estado + notas
+    const contacto = crear("p", "contacto");
+    const recibida = document.createElement("time");
+    recibida.dateTime = f.creado_en;
+    recibida.textContent = "Recibida el " + formatearMomento(f.creado_en);
+    contacto.append(recibida);
+
+    const enlace = (texto, href) => {
+      contacto.append(crear("span", "sep", "·"));
+      const a = document.createElement("a");
+      a.href = href;
+      a.textContent = texto;
+      contacto.append(a);
+    };
+    if (f.telefono) enlace(f.telefono, "tel:" + f.telefono.replace(/[^\d+]/g, ""));
+    if (f.email) enlace(f.email, "mailto:" + f.email);
+
+    cabecera.append(titulo, contacto);
+    caja.append(cabecera);
+
+    // Seguimiento
     const seg = crear("div", "seguimiento");
 
     const campoEstado = crear("div", "field estado-campo");
     const labelEstado = crear("label", null, "Estado");
     labelEstado.htmlFor = "estado";
+    const envoltorio = crear("div", "select");
     const select = document.createElement("select");
     select.id = "estado";
     ESTADOS.forEach(e => {
@@ -412,30 +471,31 @@
       if (e.valor === f.estado) op.selected = true;
       select.append(op);
     });
-    campoEstado.append(labelEstado, select);
+    envoltorio.append(select);
+    campoEstado.append(labelEstado, envoltorio);
 
     const acciones = crear("div", "acciones");
-    const botonGuardar = crear("button", "primary", "Guardar");
+    const aviso = crear("span", null, "");
+    aviso.id = "guardado";
+    aviso.setAttribute("role", "status");
+    const botonGuardar = crear("button", "primary compacto", "Guardar");
     botonGuardar.type = "button";
-    const botonImprimir = crear("button", "ghost", "Imprimir");
+    const botonImprimir = crear("button", "ghost compacto", "Imprimir");
     botonImprimir.type = "button";
     botonImprimir.addEventListener("click", () => window.print());
-    acciones.append(botonGuardar, botonImprimir);
+    acciones.append(aviso, botonGuardar, botonImprimir);
 
-    const campoNotas = crear("div", "field");
+    const campoNotas = crear("div", "field notas-campo");
     const labelNotas = crear("label", null, "Notas de la terapeuta");
     labelNotas.htmlFor = "notas";
     const notas = document.createElement("textarea");
     notas.id = "notas";
     notas.value = f.notas || "";
-    notas.placeholder = "Privado. Lo que quieras registrar de las sesiones.";
-    campoNotas.append(labelNotas, crear("p", "hint", "Solo lo ves vos. El paciente nunca accede a esto."), notas);
+    notas.placeholder = "Privado: lo que quieras registrar de las sesiones. El paciente nunca accede a esto.";
+    campoNotas.append(labelNotas, notas);
 
-    const aviso = crear("p", null, "");
-    aviso.id = "guardado";
-
-    seg.append(campoEstado, acciones, campoNotas, aviso);
-    detalle.append(seg);
+    seg.append(campoEstado, acciones, campoNotas);
+    caja.append(seg);
 
     botonGuardar.addEventListener("click", async () => {
       botonGuardar.disabled = true;
@@ -452,27 +512,53 @@
       }
       Object.assign(f, cambios);
       aviso.style.color = "var(--sage-deep)";
-      aviso.textContent = "Cambios guardados.";
+      aviso.textContent = "Guardado";
+      titulo.querySelector(".pill").className = "pill " + f.estado;
+      titulo.querySelector(".pill").textContent = etiquetaEstado(f.estado);
       pintarResumen();
       pintarLista();
     });
+
+    // Interruptor de campos vacíos: por defecto se muestran solo las respuestas
+    const controles = crear("div", "controles-vista");
+    const interruptor = crear("label", "interruptor");
+    const caja2 = document.createElement("input");
+    caja2.type = "checkbox";
+    caja2.checked = verVacios;
+    caja2.addEventListener("change", () => {
+      verVacios = caja2.checked;
+      caja.querySelectorAll(".vacio-campo, .todo-vacio").forEach(el => el.classList.toggle("ver", verVacios));
+    });
+    interruptor.append(caja2, document.createTextNode("Mostrar campos sin respuesta"));
+    controles.append(interruptor);
+    caja.append(controles);
 
     // Ficha completa, sección por sección
     SECCIONES.forEach(seccion => {
       const grupo = crear("div", "grupo");
       grupo.append(crear("h3", null, seccion.num + " · " + seccion.titulo));
       const dl = document.createElement("dl");
+      let conRespuesta = 0;
 
       seccion.campos.forEach(campo => {
         const valor = mostrarValor(campo, f[campo.col]);
-        const bloque = crear("div", "dato");
+        const bloque = crear("div", "dato" + (campo.tipo === "textarea" ? " largo" : ""));
+        if (valor) conRespuesta++;
+        else {
+          bloque.classList.add("vacio-campo");
+          if (verVacios) bloque.classList.add("ver");
+        }
         bloque.append(crear("dt", null, campo.label));
-        bloque.append(crear("dd", valor ? null : "sin", valor || "Sin respuesta"));
+        bloque.append(crear("dd", null, valor || "Sin respuesta"));
         dl.append(bloque);
       });
 
+      if (!conRespuesta) {
+        grupo.classList.add("todo-vacio");
+        if (verVacios) grupo.classList.add("ver");
+      }
       grupo.append(dl);
-      detalle.append(grupo);
+      caja.append(grupo);
     });
 
     // Borrado en dos pasos, sin diálogos del navegador
@@ -484,9 +570,9 @@
     pedir.addEventListener("click", () => {
       peligro.replaceChildren();
       const texto = crear("span", "hint", "Se borra para siempre, no hay vuelta atrás.");
-      const si = crear("button", "confirmar", "Sí, borrar");
+      const si = crear("button", "confirmar compacto", "Sí, borrar");
       si.type = "button";
-      const no = crear("button", "ghost", "Cancelar");
+      const no = crear("button", "ghost compacto", "Cancelar");
       no.type = "button";
       no.addEventListener("click", () => pintarDetalle());
       si.addEventListener("click", async () => {
@@ -506,7 +592,8 @@
       peligro.append(texto, si, no);
     });
 
-    detalle.append(peligro);
+    caja.append(peligro);
+    detalle.replaceChildren(caja);
     detalle.scrollTop = 0;
   }
 
