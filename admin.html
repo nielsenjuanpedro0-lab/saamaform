@@ -2,214 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <link rel="stylesheet" href="./app/saama.css">
-<style>
-  body { padding: 0; }
-
-  /* ---------- Puerta de acceso ---------- */
-
-  #puerta { min-height: 100vh; display: none; place-items: center; padding: 24px; }
-  #puerta.show { display: grid; }
-  #puerta form {
-    width: 100%;
-    max-width: 370px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-    box-shadow: var(--shadow);
-    padding: 34px 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-  #puerta .marca { text-align: center; display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
-  #puerta .mark { font-size: 42px; }
-
-  /* ---------- Estructura ---------- */
-
-  #panel { display: none; height: 100vh; flex-direction: column; }
-  #panel.show { display: flex; }
-
-  .barra {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    flex-wrap: wrap;
-    padding: 0 20px;
-    height: 58px;
-    flex: none;
-    border-bottom: 1px solid var(--line);
-    background: var(--surface);
-  }
-  .barra .mark { font-size: 23px; }
-  .barra-fin { margin-left: auto; display: flex; align-items: center; gap: 14px; }
-  .quien { font-size: 13px; color: var(--ink-faint); }
-
-  /* Contadores por estado, que además filtran */
-  .resumen { display: flex; gap: 6px; flex-wrap: wrap; }
-  .tarjeta {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-    padding: 5px 11px;
-    border: 1px solid transparent;
-    border-radius: 999px;
-    background: transparent;
-    font-size: 12.5px;
-    font-weight: 500;
-    letter-spacing: 0;
-    text-transform: none;
-    color: var(--ink-faint);
-    cursor: pointer;
-  }
-  .tarjeta:hover { background: var(--surface-2); color: var(--ink-soft); }
-  .tarjeta b { font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink-soft); }
-  .tarjeta[aria-pressed="true"] { background: var(--violet-wash); border-color: var(--violet-soft); color: var(--violet); }
-  .tarjeta[aria-pressed="true"] b { color: var(--violet); }
-  .tarjeta.cero { opacity: .5; }
-
-  .cuerpo { display: grid; grid-template-columns: minmax(260px, 330px) 1fr; flex: 1; min-height: 0; }
-  @media (max-width: 860px) { .cuerpo { grid-template-columns: 1fr; } #panel { height: auto; } }
-
-  /* ---------- Listado ---------- */
-
-  .listado { border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
-  .buscador { padding: 12px 14px; border-bottom: 1px solid var(--line); flex: none; }
-  .buscador input { padding: 8px 12px; font-size: 14px; border-radius: 999px; }
-  .lista { overflow-y: auto; flex: 1; }
-
-  .item {
-    width: 100%;
-    text-align: left;
-    background: none;
-    border: none;
-    border-bottom: 1px solid var(--line);
-    border-left: 2px solid transparent;
-    border-radius: 0;
-    padding: 12px 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    font-weight: 400;
-  }
-  .item:hover { background: var(--surface); }
-  .item[aria-current="true"] { background: var(--surface); border-left-color: var(--violet); }
-  .item .nom { font-weight: 600; font-size: 14.5px; }
-  .item .meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 11.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
-  .item .resumen-motivo {
-    font-size: 12.5px;
-    color: var(--ink-soft);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .vacio { padding: 36px 22px; text-align: center; color: var(--ink-faint); font-size: 14px; }
-
-  /* ---------- Detalle ---------- */
-
-  .detalle { overflow-y: auto; }
-  .detalle-interior { max-width: 860px; padding: 26px 32px 80px; }
-  @media (max-width: 860px) { .detalle-interior { padding: 22px 18px 60px; } }
-
-  .detalle-cabecera { display: flex; flex-direction: column; gap: 8px; }
-  .titulo-fila { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
-  .titulo-fila h2 {
-    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-    font-size: 27px;
-    margin: 0;
-    letter-spacing: .01em;
-    text-wrap: balance;
-  }
-  .contacto { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; font-size: 13px; color: var(--ink-faint); }
-  .contacto a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--line-strong); }
-  .contacto a:hover { color: var(--violet); border-bottom-color: var(--violet); }
-  .contacto .sep { color: var(--line-strong); }
-  .contacto time { font-variant-numeric: tabular-nums; }
-
-  /* Barra de seguimiento: una grilla explícita, sin huecos muertos */
-  .seguimiento {
-    display: grid;
-    grid-template-columns: 190px 1fr;
-    grid-template-areas:
-      "estado acciones"
-      "notas  notas";
-    gap: 16px 20px;
-    align-items: end;
-    margin: 22px 0 6px;
-    padding: 18px 20px;
-    background: var(--violet-wash);
-    border: 1px solid var(--line);
-    border-radius: 6px;
-  }
-  .seguimiento .estado-campo { grid-area: estado; }
-  .seguimiento .notas-campo  { grid-area: notas; }
-  .seguimiento .acciones     { grid-area: acciones; display: flex; gap: 10px; align-items: center; justify-content: flex-end; }
-  .seguimiento textarea { min-height: 78px; background: var(--surface); }
-  #guardado { font-size: 13px; color: var(--sage-deep); }
-  @media (max-width: 620px) {
-    .seguimiento { grid-template-columns: 1fr; grid-template-areas: "estado" "acciones" "notas"; }
-    .seguimiento .acciones { justify-content: flex-start; }
-  }
-
-  /* Ficha: dos columnas para respuestas cortas, ancho completo para los relatos */
-  .controles-vista {
-    display: flex;
-    justify-content: flex-end;
-    margin: 26px 0 -6px;
-  }
-  .interruptor { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-faint); cursor: pointer; font-weight: 400; }
-  .interruptor input { width: 15px; height: 15px; accent-color: var(--violet); margin: 0; }
-
-  .grupo { margin-top: 26px; }
-  .grupo h3 {
-    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-    font-size: 12.5px;
-    letter-spacing: .18em;
-    text-transform: uppercase;
-    color: var(--violet);
-    margin: 0 0 14px;
-    padding-bottom: 7px;
-    border-bottom: 1px solid var(--line);
-  }
-  .grupo.todo-vacio { display: none; }
-  .grupo.todo-vacio.ver { display: block; }
-
-  dl {
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 16px 26px;
-    align-items: start;
-  }
-  .dato.largo { grid-column: 1 / -1; }
-  .dato dt {
-    font-size: 11px;
-    letter-spacing: .07em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin-bottom: 3px;
-  }
-  .dato dd { margin: 0; white-space: pre-wrap; text-wrap: pretty; max-width: 70ch; }
-  .dato.vacio-campo { display: none; }
-  .dato.vacio-campo.ver { display: block; }
-  .dato.vacio-campo dd { color: var(--ink-faint); font-style: italic; }
-
-  .peligro { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
-  .peligro .confirmar { background: var(--danger); border-color: var(--danger); color: var(--on-violet); }
-
-  .sin-seleccion { display: grid; place-items: center; height: 100%; color: var(--ink-faint); text-align: center; padding: 40px; }
-
-  @media print {
-    .barra, .listado, .seguimiento .acciones, .peligro, .controles-vista, #puerta { display: none !important; }
-    .cuerpo, #panel { display: block; height: auto; }
-    .detalle { overflow: visible; }
-    .detalle-interior { max-width: none; padding: 0; }
-    body { background: #fff; color: #000; }
-    .seguimiento { background: none; border: 1px solid #ccc; }
-    .dato.vacio-campo { display: none !important; }
-  }
-</style>
+<link rel="stylesheet" href="./app/panel.css">
 
 <!-- ---------------- Acceso ---------------- -->
 
@@ -237,71 +30,115 @@
 <div id="panel">
   <div class="barra">
     <span class="mark">SAAMA</span>
-    <div class="resumen" id="resumen"></div>
+    <nav class="navegacion" id="navegacion" aria-label="Secciones"></nav>
     <div class="barra-fin">
-      <button type="button" class="ghost compacto" id="exportar">Exportar CSV</button>
       <span class="quien" id="quien"></span>
       <button type="button" class="mini" id="salir">Salir</button>
     </div>
   </div>
 
-  <div class="cuerpo">
-    <div class="listado">
-      <div class="buscador">
-        <input type="search" id="buscar" placeholder="Buscar nombre, motivo o teléfono">
-      </div>
-      <div class="lista" id="lista"></div>
-    </div>
-
-    <div class="detalle" id="detalle">
-      <div class="sin-seleccion">Elegí una ficha de la lista para verla completa.</div>
-    </div>
-  </div>
+  <div class="vista" id="vista-tablero"><div class="desplazable" id="lienzo-tablero"></div></div>
+  <div class="vista partida" id="vista-fichas"></div>
+  <div class="vista" id="vista-agenda"><div class="desplazable" id="lienzo-agenda"></div></div>
+  <div class="vista" id="vista-reportes"><div class="desplazable" id="lienzo-reportes"></div></div>
 </div>
 
 <script type="module">
   import { dbPanel as db, configurado } from "./app/db.js";
-  import { SECCIONES, CAMPOS, ESTADOS, etiquetaEstado, mostrarValor, formatearMomento } from "./app/ficha.js";
+  import { crear } from "./app/formato.js";
+  import { cargarTodo, alCambiar } from "./app/datos.js";
+  import { montarTablero, refrescarTablero } from "./app/vistas/tablero.js";
+  import { montarFichas, refrescarFichas, abrirFicha } from "./app/vistas/fichas.js";
+  import { montarAgenda, refrescarAgenda } from "./app/vistas/agenda.js";
+  import { montarReportes, refrescarReportes } from "./app/vistas/reportes.js";
 
   const puerta = document.getElementById("puerta");
   const panel = document.getElementById("panel");
-  const lista = document.getElementById("lista");
-  const detalle = document.getElementById("detalle");
-  const buscar = document.getElementById("buscar");
   const errLogin = document.getElementById("err-login");
 
-  let fichas = [];
-  let seleccionada = null;
-  let filtroEstado = null;
-  let verVacios = false;
+  const VISTAS = [
+    { clave: "tablero", label: "Consultorio" },
+    { clave: "fichas", label: "Fichas" },
+    { clave: "agenda", label: "Agenda" },
+    { clave: "reportes", label: "Reportes" }
+  ];
 
-  const crear = (etiqueta, clase, texto) => {
-    const el = document.createElement(etiqueta);
-    if (clase) el.className = clase;
-    if (texto !== undefined && texto !== null) el.textContent = texto;
-    return el;
-  };
+  let vistaActual = "tablero";
+  let montado = false;
+
+  // ---------- Navegación ----------
+
+  const navegacion = document.getElementById("navegacion");
+  VISTAS.forEach(v => {
+    const b = crear("button", null, v.label);
+    b.type = "button";
+    b.dataset.vista = v.clave;
+    b.addEventListener("click", () => irA(v.clave));
+    navegacion.append(b);
+  });
+
+  function irA(clave) {
+    vistaActual = clave;
+    VISTAS.forEach(v => {
+      document.getElementById("vista-" + v.clave).classList.toggle("activa", v.clave === clave);
+      navegacion.querySelector(`[data-vista="${v.clave}"]`)
+        .setAttribute("aria-current", v.clave === clave ? "true" : "false");
+    });
+    // Cada vista se redibuja al entrar: así nunca muestra datos viejos
+    if (clave === "tablero") refrescarTablero();
+    if (clave === "fichas") refrescarFichas();
+    if (clave === "agenda") refrescarAgenda();
+    if (clave === "reportes") refrescarReportes();
+    location.hash = clave;
+  }
 
   // ---------- Sesión ----------
 
   const mostrarLogin = () => { puerta.classList.add("show"); panel.classList.remove("show"); };
-  const mostrarPanel = sesion => {
+
+  async function mostrarPanel(sesion) {
     puerta.classList.remove("show");
     panel.classList.add("show");
     document.getElementById("quien").textContent = sesion.user.email;
-    cargar();
-  };
+
+    const { error } = await cargarTodo();
+    if (error) {
+      document.getElementById("lienzo-tablero").replaceChildren(
+        crear("div", "vacio", "No se pudieron cargar los datos: " + error.message));
+      irA("tablero");
+      return;
+    }
+
+    if (!montado) {
+      montarTablero(document.getElementById("lienzo-tablero"), {
+        alElegirFicha: id => { irA("fichas"); abrirFicha(id); }
+      });
+      montarFichas(document.getElementById("vista-fichas"));
+      montarAgenda(document.getElementById("lienzo-agenda"));
+      montarReportes(document.getElementById("lienzo-reportes"));
+
+      // Un cambio en los datos repinta la vista que se está mirando
+      alCambiar(() => {
+        if (vistaActual === "tablero") refrescarTablero();
+        if (vistaActual === "fichas") refrescarFichas();
+        if (vistaActual === "agenda") refrescarAgenda();
+        if (vistaActual === "reportes") refrescarReportes();
+      });
+      montado = true;
+    }
+
+    const desdeUrl = location.hash.replace("#", "");
+    irA(VISTAS.some(v => v.clave === desdeUrl) ? desdeUrl : "tablero");
+  }
 
   // Primero se pinta el login, siempre y sin esperar a nadie. Si hay sesión
-  // guardada, onAuthStateChange la trae enseguida y cambia al panel; así una
-  // demora de Supabase nunca deja la pantalla en blanco.
+  // guardada, onAuthStateChange la trae enseguida y cambia al panel.
   mostrarLogin();
 
   if (!configurado) {
     errLogin.textContent = "Falta completar app/config.js con los datos del proyecto Supabase.";
     errLogin.classList.add("show");
   } else {
-    // Dispara al arrancar (INITIAL_SESSION) y en cada login o cierre de sesión.
     db.auth.onAuthStateChange((_evento, sesion) => {
       sesion ? mostrarPanel(sesion) : mostrarLogin();
     });
@@ -329,297 +166,10 @@
       errLogin.classList.add("show");
       return;
     }
-    // onAuthStateChange recibe el SIGNED_IN y abre el panel.
     document.getElementById("clave").value = "";
   });
 
   document.getElementById("salir").addEventListener("click", async () => {
-    fichas = [];
-    seleccionada = null;
     await db.auth.signOut();   // onAuthStateChange devuelve la pantalla de login
-  });
-
-  // ---------- Datos ----------
-
-  async function cargar() {
-    const { data, error } = await db
-      .from("fichas")
-      .select("*")
-      .order("creado_en", { ascending: false });
-
-    if (error) {
-      lista.replaceChildren(crear("div", "vacio", "No se pudieron cargar las fichas: " + error.message));
-      return;
-    }
-    fichas = data;
-    pintarResumen();
-    pintarLista();
-  }
-
-  const visibles = () => {
-    const q = buscar.value.trim().toLowerCase();
-    return fichas.filter(f => {
-      if (filtroEstado && f.estado !== filtroEstado) return false;
-      if (!q) return true;
-      return [f.nombre, f.motivo, f.telefono, f.email]
-        .some(v => v && v.toLowerCase().includes(q));
-    });
-  };
-
-  // ---------- Contadores ----------
-
-  function pintarResumen() {
-    const cont = document.getElementById("resumen");
-    cont.replaceChildren();
-    ESTADOS.forEach(estado => {
-      const cantidad = fichas.filter(f => f.estado === estado.valor).length;
-      const boton = crear("button", "tarjeta" + (cantidad ? "" : " cero"));
-      boton.type = "button";
-      boton.setAttribute("aria-pressed", filtroEstado === estado.valor ? "true" : "false");
-      boton.append(
-        crear("b", null, cantidad),
-        crear("span", null, cantidad === 1 ? estado.label : estado.plural)
-      );
-      boton.addEventListener("click", () => {
-        filtroEstado = filtroEstado === estado.valor ? null : estado.valor;
-        pintarResumen();
-        pintarLista();
-      });
-      cont.append(boton);
-    });
-  }
-
-  // ---------- Listado ----------
-
-  function pintarLista() {
-    const filas = visibles();
-    lista.replaceChildren();
-
-    if (!filas.length) {
-      lista.append(crear("div", "vacio", fichas.length
-        ? "Ninguna ficha coincide con la búsqueda."
-        : "Todavía no llegó ninguna ficha."));
-      return;
-    }
-
-    filas.forEach(f => {
-      const item = crear("button", "item");
-      item.type = "button";
-      if (seleccionada && seleccionada.id === f.id) item.setAttribute("aria-current", "true");
-
-      const meta = crear("div", "meta");
-      meta.append(
-        crear("span", "pill " + f.estado, etiquetaEstado(f.estado)),
-        crear("span", null, formatearMomento(f.creado_en))
-      );
-
-      item.append(crear("span", "nom", f.nombre), meta);
-      if (f.motivo) item.append(crear("span", "resumen-motivo", f.motivo));
-
-      item.addEventListener("click", () => {
-        seleccionada = f;
-        pintarLista();
-        pintarDetalle();
-      });
-      lista.append(item);
-    });
-  }
-
-  // ---------- Detalle ----------
-
-  function pintarDetalle() {
-    const f = seleccionada;
-    const caja = crear("div", "detalle-interior");
-
-    // Cabecera: nombre, estado y vías de contacto en las que se puede tocar
-    const cabecera = crear("div", "detalle-cabecera");
-    const titulo = crear("div", "titulo-fila");
-    titulo.append(crear("h2", null, f.nombre), crear("span", "pill " + f.estado, etiquetaEstado(f.estado)));
-
-    const contacto = crear("p", "contacto");
-    const recibida = document.createElement("time");
-    recibida.dateTime = f.creado_en;
-    recibida.textContent = "Recibida el " + formatearMomento(f.creado_en);
-    contacto.append(recibida);
-
-    const enlace = (texto, href) => {
-      contacto.append(crear("span", "sep", "·"));
-      const a = document.createElement("a");
-      a.href = href;
-      a.textContent = texto;
-      contacto.append(a);
-    };
-    if (f.telefono) enlace(f.telefono, "tel:" + f.telefono.replace(/[^\d+]/g, ""));
-    if (f.email) enlace(f.email, "mailto:" + f.email);
-
-    cabecera.append(titulo, contacto);
-    caja.append(cabecera);
-
-    // Seguimiento
-    const seg = crear("div", "seguimiento");
-
-    const campoEstado = crear("div", "field estado-campo");
-    const labelEstado = crear("label", null, "Estado");
-    labelEstado.htmlFor = "estado";
-    const envoltorio = crear("div", "select");
-    const select = document.createElement("select");
-    select.id = "estado";
-    ESTADOS.forEach(e => {
-      const op = document.createElement("option");
-      op.value = e.valor;
-      op.textContent = e.label;
-      if (e.valor === f.estado) op.selected = true;
-      select.append(op);
-    });
-    envoltorio.append(select);
-    campoEstado.append(labelEstado, envoltorio);
-
-    const acciones = crear("div", "acciones");
-    const aviso = crear("span", null, "");
-    aviso.id = "guardado";
-    aviso.setAttribute("role", "status");
-    const botonGuardar = crear("button", "primary compacto", "Guardar");
-    botonGuardar.type = "button";
-    const botonImprimir = crear("button", "ghost compacto", "Imprimir");
-    botonImprimir.type = "button";
-    botonImprimir.addEventListener("click", () => window.print());
-    acciones.append(aviso, botonGuardar, botonImprimir);
-
-    const campoNotas = crear("div", "field notas-campo");
-    const labelNotas = crear("label", null, "Notas de la terapeuta");
-    labelNotas.htmlFor = "notas";
-    const notas = document.createElement("textarea");
-    notas.id = "notas";
-    notas.value = f.notas || "";
-    notas.placeholder = "Privado: lo que quieras registrar de las sesiones. El paciente nunca accede a esto.";
-    campoNotas.append(labelNotas, notas);
-
-    seg.append(campoEstado, acciones, campoNotas);
-    caja.append(seg);
-
-    botonGuardar.addEventListener("click", async () => {
-      botonGuardar.disabled = true;
-      botonGuardar.textContent = "Guardando…";
-      const cambios = { estado: select.value, notas: notas.value.trim() || null };
-      const { error } = await db.from("fichas").update(cambios).eq("id", f.id);
-      botonGuardar.disabled = false;
-      botonGuardar.textContent = "Guardar";
-
-      if (error) {
-        aviso.style.color = "var(--danger)";
-        aviso.textContent = "No se pudo guardar: " + error.message;
-        return;
-      }
-      Object.assign(f, cambios);
-      aviso.style.color = "var(--sage-deep)";
-      aviso.textContent = "Guardado";
-      titulo.querySelector(".pill").className = "pill " + f.estado;
-      titulo.querySelector(".pill").textContent = etiquetaEstado(f.estado);
-      pintarResumen();
-      pintarLista();
-    });
-
-    // Interruptor de campos vacíos: por defecto se muestran solo las respuestas
-    const controles = crear("div", "controles-vista");
-    const interruptor = crear("label", "interruptor");
-    const caja2 = document.createElement("input");
-    caja2.type = "checkbox";
-    caja2.checked = verVacios;
-    caja2.addEventListener("change", () => {
-      verVacios = caja2.checked;
-      caja.querySelectorAll(".vacio-campo, .todo-vacio").forEach(el => el.classList.toggle("ver", verVacios));
-    });
-    interruptor.append(caja2, document.createTextNode("Mostrar campos sin respuesta"));
-    controles.append(interruptor);
-    caja.append(controles);
-
-    // Ficha completa, sección por sección
-    SECCIONES.forEach(seccion => {
-      const grupo = crear("div", "grupo");
-      grupo.append(crear("h3", null, seccion.num + " · " + seccion.titulo));
-      const dl = document.createElement("dl");
-      let conRespuesta = 0;
-
-      seccion.campos.forEach(campo => {
-        const valor = mostrarValor(campo, f[campo.col]);
-        const bloque = crear("div", "dato" + (campo.tipo === "textarea" ? " largo" : ""));
-        if (valor) conRespuesta++;
-        else {
-          bloque.classList.add("vacio-campo");
-          if (verVacios) bloque.classList.add("ver");
-        }
-        bloque.append(crear("dt", null, campo.label));
-        bloque.append(crear("dd", null, valor || "Sin respuesta"));
-        dl.append(bloque);
-      });
-
-      if (!conRespuesta) {
-        grupo.classList.add("todo-vacio");
-        if (verVacios) grupo.classList.add("ver");
-      }
-      grupo.append(dl);
-      caja.append(grupo);
-    });
-
-    // Borrado en dos pasos, sin diálogos del navegador
-    const peligro = crear("div", "peligro");
-    const pedir = crear("button", "mini", "Borrar esta ficha");
-    pedir.type = "button";
-    peligro.append(pedir);
-
-    pedir.addEventListener("click", () => {
-      peligro.replaceChildren();
-      const texto = crear("span", "hint", "Se borra para siempre, no hay vuelta atrás.");
-      const si = crear("button", "confirmar compacto", "Sí, borrar");
-      si.type = "button";
-      const no = crear("button", "ghost compacto", "Cancelar");
-      no.type = "button";
-      no.addEventListener("click", () => pintarDetalle());
-      si.addEventListener("click", async () => {
-        si.disabled = true;
-        const { error } = await db.from("fichas").delete().eq("id", f.id);
-        if (error) {
-          si.disabled = false;
-          texto.textContent = "No se pudo borrar: " + error.message;
-          return;
-        }
-        fichas = fichas.filter(x => x.id !== f.id);
-        seleccionada = null;
-        detalle.replaceChildren(crear("div", "sin-seleccion", "Ficha borrada."));
-        pintarResumen();
-        pintarLista();
-      });
-      peligro.append(texto, si, no);
-    });
-
-    caja.append(peligro);
-    detalle.replaceChildren(caja);
-    detalle.scrollTop = 0;
-  }
-
-  // ---------- Búsqueda y exportación ----------
-
-  buscar.addEventListener("input", pintarLista);
-
-  document.getElementById("exportar").addEventListener("click", () => {
-    const columnas = ["creado_en", "estado", ...CAMPOS.map(c => c.col), "notas"];
-    const titulos = ["Recibida", "Estado", ...CAMPOS.map(c => c.label), "Notas"];
-    const escapar = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
-
-    const filas = visibles().map(f => columnas.map(col => {
-      if (col === "creado_en") return escapar(formatearMomento(f.creado_en));
-      if (col === "estado") return escapar(etiquetaEstado(f.estado));
-      const campo = CAMPOS.find(c => c.col === col);
-      return escapar(campo ? mostrarValor(campo, f[col]) : f[col]);
-    }).join(","));
-
-    // El BOM hace que Excel abra bien los acentos.
-    const csv = "﻿" + [titulos.map(escapar).join(","), ...filas].join("\r\n");
-    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-    const enlace = document.createElement("a");
-    enlace.href = url;
-    enlace.download = "fichas-saama.csv";
-    enlace.click();
-    URL.revokeObjectURL(url);
   });
 </script>

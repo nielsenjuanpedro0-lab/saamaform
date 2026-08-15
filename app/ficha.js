@@ -69,6 +69,20 @@ export const ESTADOS = [
 export const etiquetaEstado = valor =>
   (ESTADOS.find(e => e.valor === valor) || { label: valor }).label;
 
+// Estados de una sesión agendada. `color` apunta a la variable CSS que usan
+// los gráficos; `cuenta` marca las que suman como sesión efectivamente dada.
+export const SESION_ESTADOS = [
+  { valor: "programada", label: "Programada", plural: "Programadas", color: "--dato-1", cuenta: false },
+  { valor: "realizada",  label: "Realizada",  plural: "Realizadas",  color: "--dato-3", cuenta: true },
+  { valor: "ausente",    label: "No asistió", plural: "No asistió",  color: "--dato-2", cuenta: false },
+  { valor: "cancelada",  label: "Cancelada",  plural: "Canceladas",  color: "--dato-neutro", cuenta: false }
+];
+
+export const etiquetaSesion = valor =>
+  (SESION_ESTADOS.find(e => e.valor === valor) || { label: valor }).label;
+
+export const DURACIONES = [30, 45, 60, 75, 90, 120];
+
 export const formatearFecha = valor => {
   if (!valor) return "";
   const [a, m, d] = String(valor).slice(0, 10).split("-");

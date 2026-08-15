@@ -21,6 +21,16 @@
   --amber:       #B07A2A;
   --amber-wash:  #F6EDDB;
   --shadow:      0 1px 2px rgba(44,39,50,.05), 0 12px 32px -18px rgba(44,39,50,.35);
+
+  /* Colores de datos. Escalonados con el validador de paletas: pasan banda de
+     luminosidad, piso de croma, separación para daltonismo (protan/deutan/
+     tritan) y contraste contra la superficie. No cambiar de a uno: si se toca
+     uno hay que volver a validar el trío. */
+  --dato-1:       #7A4E8F;   /* violeta — programada / serie principal */
+  --dato-2:       #C87A22;   /* ámbar   — no asistió */
+  --dato-3:       #1F6E3A;   /* verde   — realizada */
+  --dato-neutro:  #9A93A2;   /* gris deliberado — cancelada, estado nulo */
+  --linea-grafico: #DCE4CC;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -44,6 +54,11 @@
     --amber:       #E3B86E;
     --amber-wash:  #3B301D;
     --shadow:      0 1px 2px rgba(0,0,0,.3), 0 14px 34px -20px rgba(0,0,0,.8);
+    --dato-1:       #A960AE;
+    --dato-2:       #CB8100;
+    --dato-3:       #137D41;
+    --dato-neutro:  #6F6779;
+    --linea-grafico: #2F2839;
   }
 }
 
@@ -67,6 +82,11 @@
   --amber:       #E3B86E;
   --amber-wash:  #3B301D;
   --shadow:      0 1px 2px rgba(0,0,0,.3), 0 14px 34px -20px rgba(0,0,0,.8);
+  --dato-1:       #A960AE;
+  --dato-2:       #CB8100;
+  --dato-3:       #137D41;
+  --dato-neutro:  #6F6779;
+  --linea-grafico: #2F2839;
 }
 
 * { box-sizing: border-box; }
