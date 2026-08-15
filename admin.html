@@ -1,0 +1,533 @@
+<title>Consultorio SAAMA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="./app/saama.css">
+<style>
+  body { padding: 0; }
+
+  /* ---------- Puerta de acceso ---------- */
+
+  #puerta {
+    min-height: 100vh;
+    display: none;
+    place-items: center;
+    padding: 24px;
+  }
+  #puerta.show { display: grid; }
+  #puerta form {
+    width: 100%;
+    max-width: 380px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    padding: 34px 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  #puerta .marca { text-align: center; display: flex; flex-direction: column; gap: 4px; margin-bottom: 6px; }
+  #puerta .mark { font-size: 44px; }
+
+  /* ---------- Estructura del panel ---------- */
+
+  #panel { display: none; min-height: 100vh; flex-direction: column; }
+  #panel.show { display: flex; }
+
+  .barra {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    padding: 16px 24px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+  .barra .mark { font-size: 26px; }
+  .barra .quien { margin-left: auto; font-size: 13px; color: var(--ink-faint); }
+
+  .resumen { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tarjeta {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+    padding: 5px 12px;
+    border: 1px solid var(--line);
+    border-radius: 3px;
+    background: var(--surface-2);
+    font-size: 12px;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    cursor: pointer;
+  }
+  .tarjeta:hover { border-color: var(--violet-soft); }
+  .tarjeta[aria-pressed="true"] { border-color: var(--violet); background: var(--violet-wash); color: var(--violet); }
+  .tarjeta b { font-size: 17px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .tarjeta[aria-pressed="true"] b { color: var(--violet); }
+
+  .cuerpo { display: grid; grid-template-columns: minmax(280px, 360px) 1fr; flex: 1; min-height: 0; }
+  @media (max-width: 860px) { .cuerpo { grid-template-columns: 1fr; } }
+
+  /* ---------- Listado ---------- */
+
+  .listado {
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .buscador { padding: 14px 16px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; gap: 10px; }
+  .lista { overflow-y: auto; flex: 1; }
+
+  .item {
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    border-left: 3px solid transparent;
+    border-radius: 0;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-weight: 400;
+  }
+  .item:hover { background: var(--surface); }
+  .item[aria-current="true"] { background: var(--surface); border-left-color: var(--violet); }
+  .item .nom { font-weight: 600; font-size: 15px; }
+  .item .meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .item .resumen-motivo {
+    font-size: 13px;
+    color: var(--ink-soft);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .vacio { padding: 40px 24px; text-align: center; color: var(--ink-faint); font-size: 14px; }
+
+  /* ---------- Detalle ---------- */
+
+  .detalle { overflow-y: auto; padding: 30px 34px 80px; }
+  @media (max-width: 860px) { .detalle { padding: 24px 20px 60px; } }
+
+  .detalle-cabecera { display: flex; flex-direction: column; gap: 6px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+  .detalle-cabecera h2 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    font-size: 30px;
+    margin: 0;
+    letter-spacing: .01em;
+  }
+  .detalle-cabecera .datos { font-size: 13px; color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+
+  .seguimiento {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 18px;
+    align-items: flex-end;
+    margin: 22px 0 8px;
+    padding: 20px 22px;
+    background: var(--violet-wash);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+  }
+  .seguimiento .field { flex: 1 1 100%; }
+  .seguimiento .estado-campo { flex: 0 0 200px; }
+  .seguimiento .acciones { display: flex; gap: 10px; align-items: center; margin-left: auto; }
+  #guardado { font-size: 13px; color: var(--sage-deep); min-height: 18px; }
+
+  .grupo { margin-top: 30px; }
+  .grupo h3 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    font-size: 13px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin: 0 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .dato { margin-bottom: 16px; }
+  .dato dt {
+    font-size: 12px;
+    letter-spacing: .05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 3px;
+  }
+  .dato dd { margin: 0; white-space: pre-wrap; text-wrap: pretty; max-width: 68ch; }
+  .dato dd.sin { color: var(--ink-faint); font-style: italic; }
+  dl { margin: 0; }
+
+  .peligro { margin-top: 44px; padding-top: 20px; border-top: 1px solid var(--line); display: flex; gap: 12px; align-items: center; }
+  .peligro .confirmar { background: var(--danger); border-color: var(--danger); color: #fff; }
+
+  .sin-seleccion { display: grid; place-items: center; height: 100%; color: var(--ink-faint); text-align: center; padding: 40px; }
+
+  @media print {
+    .barra, .listado, .seguimiento .acciones, .peligro, #puerta { display: none !important; }
+    .cuerpo { grid-template-columns: 1fr; }
+    .detalle { overflow: visible; padding: 0; }
+    body { background: #fff; color: #000; }
+    .seguimiento { background: none; border: 1px solid #ccc; }
+  }
+</style>
+
+<!-- ---------------- Acceso ---------------- -->
+
+<div id="puerta">
+  <form id="login">
+    <div class="marca">
+      <h1 class="mark">SAAMA</h1>
+      <p class="kicker">Consultorio</p>
+    </div>
+    <div class="field">
+      <label for="email">Correo</label>
+      <input type="email" id="email" autocomplete="username" required>
+    </div>
+    <div class="field">
+      <label for="clave">Contraseña</label>
+      <input type="password" id="clave" autocomplete="current-password" required>
+    </div>
+    <p class="err" id="err-login"></p>
+    <button type="submit" class="primary" id="entrar">Entrar</button>
+  </form>
+</div>
+
+<!-- ---------------- Panel ---------------- -->
+
+<div id="panel">
+  <div class="barra">
+    <span class="mark">SAAMA</span>
+    <div class="resumen" id="resumen"></div>
+    <span class="quien" id="quien"></span>
+    <button type="button" class="mini" id="salir">Salir</button>
+  </div>
+
+  <div class="cuerpo">
+    <div class="listado">
+      <div class="buscador">
+        <input type="search" id="buscar" placeholder="Buscar por nombre, motivo o teléfono">
+        <button type="button" class="ghost" id="exportar">Exportar a CSV</button>
+      </div>
+      <div class="lista" id="lista"></div>
+    </div>
+
+    <div class="detalle" id="detalle">
+      <div class="sin-seleccion">Elegí una ficha de la lista para verla completa.</div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { db, configurado } from "./app/db.js";
+  import { SECCIONES, CAMPOS, ESTADOS, etiquetaEstado, mostrarValor, formatearMomento } from "./app/ficha.js";
+
+  const puerta = document.getElementById("puerta");
+  const panel = document.getElementById("panel");
+  const lista = document.getElementById("lista");
+  const detalle = document.getElementById("detalle");
+  const buscar = document.getElementById("buscar");
+  const errLogin = document.getElementById("err-login");
+
+  let fichas = [];
+  let seleccionada = null;
+  let filtroEstado = null;
+
+  const crear = (etiqueta, clase, texto) => {
+    const el = document.createElement(etiqueta);
+    if (clase) el.className = clase;
+    if (texto !== undefined && texto !== null) el.textContent = texto;
+    return el;
+  };
+
+  // ---------- Sesión ----------
+
+  const mostrarLogin = () => { puerta.classList.add("show"); panel.classList.remove("show"); };
+  const mostrarPanel = sesion => {
+    puerta.classList.remove("show");
+    panel.classList.add("show");
+    document.getElementById("quien").textContent = sesion.user.email;
+    cargar();
+  };
+
+  if (!configurado) {
+    puerta.classList.add("show");
+    errLogin.textContent = "Falta completar app/config.js con los datos del proyecto Supabase.";
+    errLogin.classList.add("show");
+  } else {
+    const { data } = await db.auth.getSession();
+    data.session ? mostrarPanel(data.session) : mostrarLogin();
+  }
+
+  document.getElementById("login").addEventListener("submit", async e => {
+    e.preventDefault();
+    const boton = document.getElementById("entrar");
+    errLogin.classList.remove("show");
+    boton.disabled = true;
+    boton.textContent = "Entrando…";
+
+    const { data, error } = await db.auth.signInWithPassword({
+      email: document.getElementById("email").value.trim(),
+      password: document.getElementById("clave").value
+    });
+
+    boton.disabled = false;
+    boton.textContent = "Entrar";
+
+    if (error) {
+      errLogin.textContent = error.message === "Invalid login credentials"
+        ? "Correo o contraseña incorrectos."
+        : error.message;
+      errLogin.classList.add("show");
+      return;
+    }
+    document.getElementById("clave").value = "";
+    mostrarPanel(data.session);
+  });
+
+  document.getElementById("salir").addEventListener("click", async () => {
+    await db.auth.signOut();
+    fichas = [];
+    seleccionada = null;
+    mostrarLogin();
+  });
+
+  // ---------- Datos ----------
+
+  async function cargar() {
+    const { data, error } = await db
+      .from("fichas")
+      .select("*")
+      .order("creado_en", { ascending: false });
+
+    if (error) {
+      lista.replaceChildren(crear("div", "vacio", "No se pudieron cargar las fichas: " + error.message));
+      return;
+    }
+    fichas = data;
+    pintarResumen();
+    pintarLista();
+  }
+
+  const visibles = () => {
+    const q = buscar.value.trim().toLowerCase();
+    return fichas.filter(f => {
+      if (filtroEstado && f.estado !== filtroEstado) return false;
+      if (!q) return true;
+      return [f.nombre, f.motivo, f.telefono, f.email]
+        .some(v => v && v.toLowerCase().includes(q));
+    });
+  };
+
+  // ---------- Resumen por estado ----------
+
+  function pintarResumen() {
+    const cont = document.getElementById("resumen");
+    cont.replaceChildren();
+    ESTADOS.forEach(estado => {
+      const cantidad = fichas.filter(f => f.estado === estado.valor).length;
+      const boton = crear("button", "tarjeta");
+      boton.type = "button";
+      boton.setAttribute("aria-pressed", filtroEstado === estado.valor ? "true" : "false");
+      boton.append(crear("b", null, cantidad), crear("span", null, estado.label));
+      boton.addEventListener("click", () => {
+        filtroEstado = filtroEstado === estado.valor ? null : estado.valor;
+        pintarResumen();
+        pintarLista();
+      });
+      cont.append(boton);
+    });
+  }
+
+  // ---------- Listado ----------
+
+  function pintarLista() {
+    const filas = visibles();
+    lista.replaceChildren();
+
+    if (!filas.length) {
+      lista.append(crear("div", "vacio", fichas.length
+        ? "Ninguna ficha coincide con la búsqueda."
+        : "Todavía no llegó ninguna ficha."));
+      return;
+    }
+
+    filas.forEach(f => {
+      const item = crear("button", "item");
+      item.type = "button";
+      if (seleccionada && seleccionada.id === f.id) item.setAttribute("aria-current", "true");
+
+      const meta = crear("div", "meta");
+      const pill = crear("span", "pill " + f.estado, etiquetaEstado(f.estado));
+      meta.append(pill, crear("span", null, formatearMomento(f.creado_en)));
+
+      item.append(crear("span", "nom", f.nombre), meta);
+      if (f.motivo) item.append(crear("span", "resumen-motivo", f.motivo));
+
+      item.addEventListener("click", () => {
+        seleccionada = f;
+        pintarLista();
+        pintarDetalle();
+      });
+      lista.append(item);
+    });
+  }
+
+  // ---------- Detalle ----------
+
+  function pintarDetalle() {
+    const f = seleccionada;
+    detalle.replaceChildren();
+
+    const cabecera = crear("div", "detalle-cabecera");
+    cabecera.append(crear("h2", null, f.nombre));
+    const contacto = [f.telefono, f.email].filter(Boolean).join(" · ");
+    cabecera.append(crear("p", "datos", "Recibida el " + formatearMomento(f.creado_en) + (contacto ? " · " + contacto : "")));
+    detalle.append(cabecera);
+
+    // Seguimiento: estado + notas
+    const seg = crear("div", "seguimiento");
+
+    const campoEstado = crear("div", "field estado-campo");
+    const labelEstado = crear("label", null, "Estado");
+    labelEstado.htmlFor = "estado";
+    const select = document.createElement("select");
+    select.id = "estado";
+    ESTADOS.forEach(e => {
+      const op = document.createElement("option");
+      op.value = e.valor;
+      op.textContent = e.label;
+      if (e.valor === f.estado) op.selected = true;
+      select.append(op);
+    });
+    campoEstado.append(labelEstado, select);
+
+    const acciones = crear("div", "acciones");
+    const botonGuardar = crear("button", "primary", "Guardar");
+    botonGuardar.type = "button";
+    const botonImprimir = crear("button", "ghost", "Imprimir");
+    botonImprimir.type = "button";
+    botonImprimir.addEventListener("click", () => window.print());
+    acciones.append(botonGuardar, botonImprimir);
+
+    const campoNotas = crear("div", "field");
+    const labelNotas = crear("label", null, "Notas de la terapeuta");
+    labelNotas.htmlFor = "notas";
+    const notas = document.createElement("textarea");
+    notas.id = "notas";
+    notas.value = f.notas || "";
+    notas.placeholder = "Privado. Lo que quieras registrar de las sesiones.";
+    campoNotas.append(labelNotas, crear("p", "hint", "Solo lo ves vos. El paciente nunca accede a esto."), notas);
+
+    const aviso = crear("p", null, "");
+    aviso.id = "guardado";
+
+    seg.append(campoEstado, acciones, campoNotas, aviso);
+    detalle.append(seg);
+
+    botonGuardar.addEventListener("click", async () => {
+      botonGuardar.disabled = true;
+      botonGuardar.textContent = "Guardando…";
+      const cambios = { estado: select.value, notas: notas.value.trim() || null };
+      const { error } = await db.from("fichas").update(cambios).eq("id", f.id);
+      botonGuardar.disabled = false;
+      botonGuardar.textContent = "Guardar";
+
+      if (error) {
+        aviso.style.color = "var(--danger)";
+        aviso.textContent = "No se pudo guardar: " + error.message;
+        return;
+      }
+      Object.assign(f, cambios);
+      aviso.style.color = "var(--sage-deep)";
+      aviso.textContent = "Cambios guardados.";
+      pintarResumen();
+      pintarLista();
+    });
+
+    // Ficha completa, sección por sección
+    SECCIONES.forEach(seccion => {
+      const grupo = crear("div", "grupo");
+      grupo.append(crear("h3", null, seccion.num + " · " + seccion.titulo));
+      const dl = document.createElement("dl");
+
+      seccion.campos.forEach(campo => {
+        const valor = mostrarValor(campo, f[campo.col]);
+        const bloque = crear("div", "dato");
+        bloque.append(crear("dt", null, campo.label));
+        bloque.append(crear("dd", valor ? null : "sin", valor || "Sin respuesta"));
+        dl.append(bloque);
+      });
+
+      grupo.append(dl);
+      detalle.append(grupo);
+    });
+
+    // Borrado en dos pasos, sin diálogos del navegador
+    const peligro = crear("div", "peligro");
+    const pedir = crear("button", "mini", "Borrar esta ficha");
+    pedir.type = "button";
+    peligro.append(pedir);
+
+    pedir.addEventListener("click", () => {
+      peligro.replaceChildren();
+      const texto = crear("span", "hint", "Se borra para siempre, no hay vuelta atrás.");
+      const si = crear("button", "confirmar", "Sí, borrar");
+      si.type = "button";
+      const no = crear("button", "ghost", "Cancelar");
+      no.type = "button";
+      no.addEventListener("click", () => pintarDetalle());
+      si.addEventListener("click", async () => {
+        si.disabled = true;
+        const { error } = await db.from("fichas").delete().eq("id", f.id);
+        if (error) {
+          si.disabled = false;
+          texto.textContent = "No se pudo borrar: " + error.message;
+          return;
+        }
+        fichas = fichas.filter(x => x.id !== f.id);
+        seleccionada = null;
+        detalle.replaceChildren(crear("div", "sin-seleccion", "Ficha borrada."));
+        pintarResumen();
+        pintarLista();
+      });
+      peligro.append(texto, si, no);
+    });
+
+    detalle.append(peligro);
+    detalle.scrollTop = 0;
+  }
+
+  // ---------- Búsqueda y exportación ----------
+
+  buscar.addEventListener("input", pintarLista);
+
+  document.getElementById("exportar").addEventListener("click", () => {
+    const columnas = ["creado_en", "estado", ...CAMPOS.map(c => c.col), "notas"];
+    const titulos = ["Recibida", "Estado", ...CAMPOS.map(c => c.label), "Notas"];
+    const escapar = v => '"' + String(v ?? "").replace(/"/g, '""') + '"';
+
+    const filas = visibles().map(f => columnas.map(col => {
+      if (col === "creado_en") return escapar(formatearMomento(f.creado_en));
+      if (col === "estado") return escapar(etiquetaEstado(f.estado));
+      const campo = CAMPOS.find(c => c.col === col);
+      return escapar(campo ? mostrarValor(campo, f[col]) : f[col]);
+    }).join(","));
+
+    // El BOM hace que Excel abra bien los acentos.
+    const csv = "﻿" + [titulos.map(escapar).join(","), ...filas].join("\r\n");
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+    const enlace = document.createElement("a");
+    enlace.href = url;
+    enlace.download = "fichas-saama.csv";
+    enlace.click();
+    URL.revokeObjectURL(url);
+  });
+</script>

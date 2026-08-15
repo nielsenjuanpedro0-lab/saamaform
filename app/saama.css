@@ -1,0 +1,218 @@
+/* SAAMA — hoja compartida entre el formulario público y el panel /admin.
+   Paleta tomada del flyer: salvia pálido de fondo, violeta del wordmark, verde de la onda. */
+
+:root {
+  --ground:      #EAF1DC;
+  --surface:     #F8FBF1;
+  --surface-2:   #F1F6E6;
+  --ink:         #2C2732;
+  --ink-soft:    #5C5462;
+  --ink-faint:   #86808C;
+  --violet:      #7A4E8F;
+  --violet-soft: #9C74AE;
+  --violet-wash: #EDE3F2;
+  --on-violet:   #FBF8FC;
+  --sage:        #A9C173;
+  --sage-deep:   #6F8A3E;
+  --line:        #D6DFC2;
+  --line-strong: #BFC9A8;
+  --danger:      #A33B4A;
+  --danger-wash: #F6E4E6;
+  --amber:       #B07A2A;
+  --amber-wash:  #F6EDDB;
+  --shadow:      0 1px 2px rgba(44,39,50,.05), 0 12px 32px -18px rgba(44,39,50,.35);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:      #1B1720;
+    --surface:     #241F2B;
+    --surface-2:   #2B2533;
+    --ink:         #EFE9F2;
+    --ink-soft:    #BCB2C4;
+    --ink-faint:   #8C8394;
+    --violet:      #C9A5DA;
+    --violet-soft: #A984BC;
+    --violet-wash: #322942;
+    --on-violet:   #1B1720;
+    --sage:        #AFC97C;
+    --sage-deep:   #C3D793;
+    --line:        #3A3244;
+    --line-strong: #4C4359;
+    --danger:      #E8909C;
+    --danger-wash: #3A2229;
+    --amber:       #E0B368;
+    --amber-wash:  #3A2F1C;
+    --shadow:      0 1px 2px rgba(0,0,0,.3), 0 14px 34px -20px rgba(0,0,0,.8);
+  }
+}
+
+:root[data-theme="dark"] {
+  --ground:      #1B1720;
+  --surface:     #241F2B;
+  --surface-2:   #2B2533;
+  --ink:         #EFE9F2;
+  --ink-soft:    #BCB2C4;
+  --ink-faint:   #8C8394;
+  --violet:      #C9A5DA;
+  --violet-soft: #A984BC;
+  --violet-wash: #322942;
+  --on-violet:   #1B1720;
+  --sage:        #AFC97C;
+  --sage-deep:   #C3D793;
+  --line:        #3A3244;
+  --line-strong: #4C4359;
+  --danger:      #E8909C;
+  --danger-wash: #3A2229;
+  --amber:       #E0B368;
+  --amber-wash:  #3A2F1C;
+  --shadow:      0 1px 2px rgba(0,0,0,.3), 0 14px 34px -20px rgba(0,0,0,.8);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  background: var(--ground);
+  color: var(--ink);
+  font-family: ui-sans-serif, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.55;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+.serif {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+}
+
+/* ---------- Marca ---------- */
+
+.mark {
+  font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  line-height: .95;
+  letter-spacing: .1em;
+  text-indent: .1em;
+  color: var(--violet);
+  margin: 0;
+  font-weight: 400;
+}
+.kicker {
+  font-size: 11px;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--violet-soft);
+  margin: 0;
+}
+
+/* ---------- Campos ---------- */
+
+.field { display: flex; flex-direction: column; gap: 7px; }
+.row { display: flex; flex-wrap: wrap; gap: 22px; }
+.row > .field { flex: 1 1 220px; }
+
+label { font-size: 14px; font-weight: 600; letter-spacing: .01em; }
+.hint { font-size: 13px; color: var(--ink-faint); line-height: 1.45; text-wrap: pretty; margin: 0; }
+.opt {
+  font-weight: 400;
+  color: var(--ink-faint);
+  font-size: 12.5px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+input[type="text"], input[type="date"], input[type="tel"],
+input[type="email"], input[type="password"], input[type="search"],
+textarea, select {
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface-2);
+  border: 1px solid var(--line-strong);
+  border-radius: 3px;
+  padding: 11px 13px;
+  width: 100%;
+  transition: border-color .15s ease, box-shadow .15s ease, background .15s ease;
+}
+textarea { resize: vertical; min-height: 96px; line-height: 1.5; }
+input::placeholder, textarea::placeholder { color: var(--ink-faint); opacity: .8; }
+
+input:focus-visible, textarea:focus-visible, select:focus-visible,
+button:focus-visible, a:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+
+input:focus, textarea:focus, select:focus {
+  border-color: var(--violet-soft);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--violet-wash);
+}
+input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--danger); }
+
+.err { font-size: 13px; color: var(--danger); display: none; }
+.err.show { display: block; }
+
+/* Trampa para bots: nunca visible, nunca enfocable con teclado */
+.trampa {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ---------- Botones ---------- */
+
+button, .btn {
+  font: inherit;
+  font-weight: 600;
+  letter-spacing: .02em;
+  border-radius: 3px;
+  padding: 13px 22px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.primary { background: var(--violet); color: var(--on-violet); border-color: var(--violet); }
+.primary:hover:not(:disabled) { background: var(--violet-soft); border-color: var(--violet-soft); }
+.ghost { background: transparent; color: var(--ink-soft); border-color: var(--line-strong); }
+.ghost:hover:not(:disabled) { color: var(--ink); border-color: var(--violet-soft); }
+button:disabled { opacity: .55; cursor: progress; }
+
+.mini {
+  background: none;
+  border: none;
+  color: var(--ink-faint);
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 6px;
+}
+.mini:hover { color: var(--danger); }
+
+/* ---------- Estados del CRM ---------- */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 2px;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.pill.nueva       { background: var(--violet-wash); color: var(--violet); border-color: var(--violet-soft); }
+.pill.contactada  { background: var(--amber-wash);  color: var(--amber);  border-color: var(--amber); }
+.pill.en_terapia  { background: var(--surface-2);   color: var(--sage-deep); border-color: var(--sage); }
+.pill.cerrada     { background: transparent;        color: var(--ink-faint); border-color: var(--line-strong); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}

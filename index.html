@@ -1,0 +1,376 @@
+<title>Ficha SAAMA</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="./app/saama.css">
+<style>
+  body { padding: 0 20px 96px; }
+  .wrap { max-width: 660px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+
+  header { padding-top: 56px; display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; }
+  .rays { display: block; width: 54px; height: 26px; margin-bottom: -6px; color: var(--violet); }
+  .mark { font-size: clamp(46px, 13vw, 74px); }
+  .lede { margin: 22px 0 0; color: var(--ink-soft); max-width: 46ch; text-wrap: pretty; }
+
+  form { display: flex; flex-direction: column; gap: 28px; }
+
+  fieldset {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    box-shadow: var(--shadow);
+    margin: 0;
+    padding: 30px 26px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  legend {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    padding: 0 10px;
+    margin-left: -10px;
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    font-size: 15px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--violet);
+  }
+  legend .num { font-size: 12px; letter-spacing: .06em; color: var(--sage-deep); font-variant-numeric: tabular-nums; }
+
+  .consent {
+    background: var(--violet-wash);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .consent h2 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    font-size: 15px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--violet);
+    margin: 0;
+  }
+  .consent p { margin: 0; font-size: 14px; color: var(--ink-soft); text-wrap: pretty; }
+  .check { display: flex; gap: 12px; align-items: flex-start; cursor: pointer; }
+  .check input { margin: 3px 0 0; width: 18px; height: 18px; flex: none; accent-color: var(--violet); }
+  .check span { font-size: 14px; font-weight: 500; }
+
+  .actions { display: flex; flex-direction: column; gap: 12px; }
+  .actions .mini { align-self: center; }
+
+  /* Pantalla final y avisos */
+  #gracias { display: none; }
+  #gracias.show { display: block; }
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--sage);
+    border-left: 3px solid var(--sage-deep);
+    border-radius: 4px;
+    padding: 30px 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: var(--shadow);
+  }
+  .panel h2 {
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    font-size: 19px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--sage-deep);
+    margin: 0;
+  }
+  .panel p { margin: 0; color: var(--ink-soft); text-wrap: pretty; }
+
+  .aviso {
+    display: none;
+    background: var(--danger-wash);
+    border: 1px solid var(--danger);
+    border-radius: 4px;
+    padding: 16px 18px;
+    font-size: 14.5px;
+    color: var(--ink);
+    flex-direction: column;
+    gap: 10px;
+  }
+  .aviso.show { display: flex; }
+  .aviso strong { color: var(--danger); }
+
+  footer { text-align: center; font-size: 12.5px; color: var(--ink-faint); line-height: 1.6; }
+  footer .wave { display: block; width: 100%; height: 40px; margin-bottom: 18px; color: var(--sage); opacity: .5; }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <svg class="rays" viewBox="0 0 54 26" fill="none" aria-hidden="true">
+      <g stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <path d="M27 2v9"/><path d="M17 5l3.5 8"/><path d="M37 5l-3.5 8"/>
+        <path d="M8 11l6.5 6"/><path d="M46 11l-6.5 6"/>
+      </g>
+    </svg>
+    <h1 class="mark">SAAMA</h1>
+    <p class="kicker">Terapia SAAMA a distancia</p>
+    <p class="lede">Esta ficha es el punto de partida de tu terapia. Contá lo que sientas necesario, con tus palabras: cuanto más completa esté, mejor podemos acompañarte.</p>
+  </header>
+
+  <form id="ficha" novalidate>
+    <!-- Las secciones se arman desde app/ficha.js -->
+
+    <div class="consent">
+      <h2>Confidencialidad</h2>
+      <p>Los datos de esta ficha son de salud y se usan solo para preparar y realizar tu terapia. No se comparten con terceros ni se publican, y solo puede leerlos la terapeuta desde su cuenta privada. Podés pedir que se borren cuando quieras.</p>
+      <label class="check" for="consentimiento">
+        <input type="checkbox" id="consentimiento" required>
+        <span>Autorizo el tratamiento de estos datos de salud con el fin de recibir la terapia SAAMA, y confirmo que la información es mía y verdadera.</span>
+      </label>
+      <p class="err" id="err-consentimiento">Necesitamos tu autorización para continuar.</p>
+    </div>
+
+    <div class="aviso" id="aviso">
+      <p><strong>No pudimos enviar la ficha.</strong> <span id="aviso-detalle"></span></p>
+      <p>Tus respuestas siguen acá y quedaron guardadas en este dispositivo. Probá de nuevo en un momento, o copiá la ficha y envíasela a la terapeuta por WhatsApp.</p>
+      <button type="button" class="ghost" id="copiar">Copiar la ficha</button>
+      <p class="hint" id="copiado" role="status"></p>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="primary" id="enviar">Enviar mi ficha</button>
+      <button type="button" class="mini" id="borrar">Borrar todo y empezar de nuevo</button>
+    </div>
+  </form>
+
+  <div id="gracias">
+    <div class="panel">
+      <h2>Ficha recibida</h2>
+      <p>Gracias por tomarte el tiempo. Tu ficha ya llegó a la terapeuta, que va a contactarte al teléfono que dejaste.</p>
+      <p>Si querés sumar una foto o algo que te haya quedado afuera, mandáselo por WhatsApp mencionando tu nombre.</p>
+    </div>
+  </div>
+
+  <footer>
+    <svg class="wave" viewBox="0 0 600 40" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 26 C 120 6, 230 34, 340 22 S 520 6, 600 18 L600 40 L0 40 Z" fill="currentColor"/>
+    </svg>
+    Terapia SAAMA a distancia · Ficha de admisión
+  </footer>
+
+</div>
+
+<script type="module">
+  import { db, configurado } from "./app/db.js";
+  import { SECCIONES, CAMPOS, OBLIGATORIOS, mostrarValor } from "./app/ficha.js";
+
+  const form = document.getElementById("ficha");
+  const consentimiento = document.getElementById("consentimiento");
+  const aviso = document.getElementById("aviso");
+  const botonEnviar = document.getElementById("enviar");
+  const BORRADOR = "saama-ficha-borrador";
+
+  // ---------- Armado del formulario ----------
+
+  const crear = (etiqueta, clase, texto) => {
+    const el = document.createElement(etiqueta);
+    if (clase) el.className = clase;
+    if (texto) el.textContent = texto;
+    return el;
+  };
+
+  const campoHTML = campo => {
+    const cont = crear("div", "field");
+
+    const label = crear("label", null, campo.label);
+    label.htmlFor = campo.col;
+    if (campo.opcional) {
+      label.append(" ");
+      label.append(crear("span", "opt", "Opcional"));
+    }
+    cont.append(label);
+
+    if (campo.hint) cont.append(crear("p", "hint", campo.hint));
+
+    const control = campo.tipo === "textarea"
+      ? document.createElement("textarea")
+      : document.createElement("input");
+    if (campo.tipo !== "textarea") control.type = campo.tipo;
+    control.id = campo.col;
+    if (campo.placeholder) control.placeholder = campo.placeholder;
+    if (campo.autocomplete) control.autocomplete = campo.autocomplete;
+    cont.append(control);
+
+    if (campo.req) {
+      const err = crear("p", "err", "Este dato nos hace falta para poder acompañarte.");
+      err.id = "err-" + campo.col;
+      cont.append(err);
+    }
+    return cont;
+  };
+
+  const anclaje = form.querySelector(".consent");
+
+  SECCIONES.forEach(seccion => {
+    const fs = document.createElement("fieldset");
+    const leyenda = document.createElement("legend");
+    leyenda.append(crear("span", "num", seccion.num), document.createTextNode(" " + seccion.titulo));
+    fs.append(leyenda);
+
+    // Los campos "medio" consecutivos comparten fila.
+    let fila = null;
+    seccion.campos.forEach(campo => {
+      const nodo = campoHTML(campo);
+      if (campo.medio) {
+        if (!fila) { fila = crear("div", "row"); fs.append(fila); }
+        fila.append(nodo);
+        if (fila.children.length === 2) fila = null;
+      } else {
+        fila = null;
+        fs.append(nodo);
+      }
+    });
+
+    if (seccion.nota) fs.append(crear("p", "hint", seccion.nota));
+    form.insertBefore(fs, anclaje);
+  });
+
+  // Trampa para bots: un campo invisible que una persona nunca completa.
+  const trampa = document.createElement("div");
+  trampa.className = "trampa";
+  trampa.setAttribute("aria-hidden", "true");
+  trampa.innerHTML = '<label for="apodo">No completar</label><input type="text" id="apodo" tabindex="-1" autocomplete="off">';
+  form.append(trampa);
+
+  // ---------- Borrador local ----------
+
+  const controles = () => CAMPOS.map(c => document.getElementById(c.col));
+
+  const guardar = () => {
+    const datos = {};
+    controles().forEach(c => { if (c.value.trim()) datos[c.id] = c.value; });
+    try { localStorage.setItem(BORRADOR, JSON.stringify(datos)); } catch (e) {}
+  };
+
+  try {
+    const datos = JSON.parse(localStorage.getItem(BORRADOR) || "{}");
+    Object.entries(datos).forEach(([id, valor]) => {
+      const c = document.getElementById(id);
+      if (c) c.value = valor;
+    });
+  } catch (e) {}
+
+  form.addEventListener("input", guardar);
+
+  // ---------- Validación ----------
+
+  const marcarError = (id, mostrar) => {
+    const campo = document.getElementById(id);
+    const err = document.getElementById("err-" + id);
+    if (err) err.classList.toggle("show", mostrar);
+    if (campo && campo.type !== "checkbox") campo.setAttribute("aria-invalid", mostrar ? "true" : "false");
+  };
+
+  const validar = () => {
+    const faltan = [];
+    OBLIGATORIOS.forEach(col => {
+      const vacio = !document.getElementById(col).value.trim();
+      marcarError(col, vacio);
+      if (vacio) faltan.push(col);
+    });
+    const sinConsentir = !consentimiento.checked;
+    marcarError("consentimiento", sinConsentir);
+    if (sinConsentir) faltan.push("consentimiento");
+    return faltan;
+  };
+
+  // ---------- Envío ----------
+
+  const armarTexto = () => {
+    const bloques = SECCIONES.map(seccion => {
+      const lineas = seccion.campos
+        .map(campo => ({ campo, valor: document.getElementById(campo.col).value.trim() }))
+        .filter(({ valor }) => valor)
+        .map(({ campo, valor }) => "• " + campo.label + ": " + mostrarValor(campo, valor).replace(/\n+/g, " / "));
+      return lineas.length ? "*" + seccion.titulo.toUpperCase() + "*\n" + lineas.join("\n") : "";
+    }).filter(Boolean);
+
+    return ["*FICHA SAAMA — Terapia a distancia*", ...bloques].join("\n\n");
+  };
+
+  const mostrarAviso = detalle => {
+    document.getElementById("aviso-detalle").textContent = detalle;
+    aviso.classList.add("show");
+    aviso.scrollIntoView({ behavior: "smooth", block: "center" });
+  };
+
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    aviso.classList.remove("show");
+
+    // Si la trampa tiene contenido, es un bot: fingimos éxito y no guardamos nada.
+    if (document.getElementById("apodo").value) {
+      form.style.display = "none";
+      document.getElementById("gracias").classList.add("show");
+      return;
+    }
+
+    const faltan = validar();
+    if (faltan.length) {
+      const primero = document.getElementById(faltan[0]);
+      primero.focus();
+      primero.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+
+    if (!configurado) {
+      mostrarAviso("El sitio todavía no está conectado a la base de datos.");
+      return;
+    }
+
+    botonEnviar.disabled = true;
+    botonEnviar.textContent = "Enviando…";
+
+    const payload = { consentimiento: true };
+    CAMPOS.forEach(campo => {
+      const valor = document.getElementById(campo.col).value.trim();
+      payload[campo.col] = valor || null;
+    });
+
+    const { error } = await db.from("fichas").insert(payload);
+
+    botonEnviar.disabled = false;
+    botonEnviar.textContent = "Enviar mi ficha";
+
+    if (error) {
+      mostrarAviso(error.message);
+      return;
+    }
+
+    try { localStorage.removeItem(BORRADOR); } catch (e) {}
+    form.style.display = "none";
+    document.getElementById("gracias").classList.add("show");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+
+  document.getElementById("copiar").addEventListener("click", async () => {
+    const salida = document.getElementById("copiado");
+    try {
+      await navigator.clipboard.writeText(armarTexto());
+      salida.textContent = "Ficha copiada. Pegala en el chat de WhatsApp.";
+    } catch (e) {
+      salida.textContent = "No se pudo copiar en este navegador.";
+    }
+  });
+
+  document.getElementById("borrar").addEventListener("click", () => {
+    form.reset();
+    controles().forEach(c => c.removeAttribute("aria-invalid"));
+    form.querySelectorAll(".err").forEach(el => el.classList.remove("show"));
+    aviso.classList.remove("show");
+    try { localStorage.removeItem(BORRADOR); } catch (e) {}
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+</script>
