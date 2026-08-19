@@ -27,10 +27,13 @@
      tritan) y contraste contra la superficie. No cambiar de a uno: si se toca
      uno hay que volver a validar el trío. */
   --dato-1:       #7A4E8F;   /* violeta — programada / serie principal */
-  --dato-2:       #C87A22;   /* ámbar   — no asistió */
+  --dato-2:       #C87A22;   /* ámbar   — pendiente de cobro */
   --dato-3:       #1F6E3A;   /* verde   — realizada */
   --dato-neutro:  #9A93A2;   /* gris deliberado — cancelada, estado nulo */
   --linea-grafico: #DCE4CC;
+  /* Hace que los controles nativos (calendario, flechas del número, lista
+     desplegable) se dibujen con el mismo tema que la página. */
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -59,6 +62,7 @@
     --dato-3:       #137D41;
     --dato-neutro:  #6F6779;
     --linea-grafico: #2F2839;
+    color-scheme: dark;
   }
 }
 
@@ -87,6 +91,7 @@
   --dato-3:       #137D41;
   --dato-neutro:  #6F6779;
   --linea-grafico: #2F2839;
+  color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -167,8 +172,10 @@ label { font-size: 14px; font-weight: 600; letter-spacing: .01em; }
   pointer-events: none;
 }
 
-input[type="text"], input[type="date"], input[type="tel"],
-input[type="email"], input[type="password"], input[type="search"],
+/* Todos los campos, sin listar tipos uno por uno: enumerarlos deja afuera los
+   que se agreguen después (fue el caso de datetime-local y number, que
+   quedaron con el control nativo blanco sobre fondo oscuro). */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
 textarea, select {
   font: inherit;
   color: var(--ink);
@@ -208,6 +215,10 @@ input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: var(--
 
 button, .btn {
   font: inherit;
+  /* Sin esto el botón usa el color propio del navegador (buttontext, casi
+     negro): en tema claro pasa desapercibido, pero en oscuro deja ilegible
+     todo lo que va dentro de un botón — listados, celdas del calendario. */
+  color: inherit;
   font-weight: 600;
   letter-spacing: .02em;
   border-radius: 3px;

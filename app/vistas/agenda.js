@@ -161,7 +161,6 @@ function detalleDelDia() {
     fila.append(crear("span", "cuando", formatearHora(s.inicia_en)));
     fila.append(crear("span", "pill " + pillDe(s.estado), etiquetaSesion(s.estado)));
     fila.append(crear("strong", null, s.fichas ? s.fichas.nombre : "—"));
-    fila.append(crear("span", "hint", s.duracion_min + " min"));
     if (s.arancel != null) {
       fila.append(crear("span", "hint", formatearPesos(s.arancel) + (s.pagada ? " · paga" : " · a cobrar")));
     }
@@ -183,7 +182,6 @@ function detalleDelDia() {
 const pillDe = valor => ({
   programada: "nueva",
   realizada: "en_terapia",
-  ausente: "contactada",
   cancelada: "cerrada"
 }[valor] || "cerrada");
 

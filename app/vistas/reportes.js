@@ -208,7 +208,6 @@ function tablaPacientes(sesiones) {
     const fila = cuenta.get(nombre) || { nombre, total: 0, realizadas: 0, ausencias: 0 };
     fila.total++;
     if (s.estado === "realizada") fila.realizadas++;
-    if (s.estado === "ausente") fila.ausencias++;
     cuenta.set(nombre, fila);
   });
 
@@ -277,9 +276,9 @@ function exportaciones(fichas, sesiones) {
   const bSesiones = crear("button", "ghost compacto", "Sesiones del período");
   bSesiones.type = "button";
   bSesiones.addEventListener("click", () => bajarCSV("sesiones-saama.csv", [
-    ["Fecha", "Paciente", "Duración (min)", "Estado", "Arancel", "Pagada", "Notas"],
+    ["Fecha", "Paciente", "Estado", "Arancel", "Pagada", "Notas"],
     ...sesiones.map(s => [
-      s.inicia_en, s.fichas ? s.fichas.nombre : "", s.duracion_min,
+      s.inicia_en, s.fichas ? s.fichas.nombre : "",
       SESION_ESTADOS.find(e => e.valor === s.estado)?.label || s.estado,
       s.arancel ?? "", s.pagada ? "Sí" : "No", s.notas
     ])

@@ -71,17 +71,17 @@ export const etiquetaEstado = valor =>
 
 // Estados de una sesión agendada. `color` apunta a la variable CSS que usan
 // los gráficos; `cuenta` marca las que suman como sesión efectivamente dada.
+// Las sesiones son a distancia y se hacen sin el paciente presente, así que
+// no existe "no asistió": o está pendiente, o se hizo, o se dio de baja.
 export const SESION_ESTADOS = [
-  { valor: "programada", label: "Programada", plural: "Programadas", color: "--dato-1", cuenta: false },
-  { valor: "realizada",  label: "Realizada",  plural: "Realizadas",  color: "--dato-3", cuenta: true },
-  { valor: "ausente",    label: "No asistió", plural: "No asistió",  color: "--dato-2", cuenta: false },
-  { valor: "cancelada",  label: "Cancelada",  plural: "Canceladas",  color: "--dato-neutro", cuenta: false }
+  { valor: "programada", label: "Pendiente",  plural: "Pendientes", color: "--dato-1", cuenta: false },
+  { valor: "realizada",  label: "Realizada",  plural: "Realizadas", color: "--dato-3", cuenta: true },
+  { valor: "cancelada",  label: "Cancelada",  plural: "Canceladas", color: "--dato-neutro", cuenta: false }
 ];
 
 export const etiquetaSesion = valor =>
   (SESION_ESTADOS.find(e => e.valor === valor) || { label: valor }).label;
 
-export const DURACIONES = [30, 45, 60, 75, 90, 120];
 
 export const formatearFecha = valor => {
   if (!valor) return "";

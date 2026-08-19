@@ -11,10 +11,15 @@ Sitio estático sobre Supabase. Sin build, sin dependencias que instalar.
 
 - **Consultorio** — indicadores del mes, próximas sesiones, fichas sin contactar y las sesiones de los últimos seis meses.
 - **Fichas** — listado con búsqueda, ficha completa, estado, notas privadas, sesiones del paciente, impresión y borrado.
-- **Agenda** — calendario mensual. Se agenda desde cualquier día, y cada sesión guarda duración, estado, arancel, si está paga y las notas de lo trabajado.
+- **Agenda** — calendario mensual. Se agenda desde cualquier día, y cada sesión guarda fecha, estado, arancel, si está paga y las notas de lo trabajado.
 - **Reportes** — fichas y sesiones por mes, estados, ingresos, ranking de pacientes y exportación a CSV, todo sobre el período elegido.
 
 Los aranceles son opcionales: si no se cargan, los bloques de dinero directamente no aparecen.
+
+Las sesiones son **a distancia y se hacen sin el paciente presente**, así que no tienen duración ni estado "no asistió": una sesión está *pendiente*, *realizada* o *cancelada*.
+
+La tabla `sesiones` conserva la columna `duracion_min` (con su valor por defecto) y su restricción todavía acepta `ausente`. Son restos inofensivos de la primera versión: la aplicación no los escribe nunca, y dejarlos evita tener que correr otra migración.
+
 
 ## Archivos
 

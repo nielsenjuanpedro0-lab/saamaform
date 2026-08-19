@@ -310,7 +310,6 @@ function bloqueSesiones(f) {
     const fila = crear("div", "sesion-fila");
     fila.append(crear("span", "cuando", formatearMomento(s.inicia_en)));
     fila.append(crear("span", "pill " + pillDe(s.estado), etiquetaSesion(s.estado)));
-    fila.append(crear("span", "hint", s.duracion_min + " min"));
     if (s.arancel != null) {
       fila.append(crear("span", "hint", formatearPesos(s.arancel) + (s.pagada ? " · paga" : " · a cobrar")));
     }
@@ -330,6 +329,5 @@ function bloqueSesiones(f) {
 const pillDe = valor => ({
   programada: "nueva",
   realizada: "en_terapia",
-  ausente: "contactada",
   cancelada: "cerrada"
 }[valor] || "cerrada");

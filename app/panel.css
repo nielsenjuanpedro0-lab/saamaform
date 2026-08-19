@@ -275,7 +275,7 @@ dl { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(21
 }
 .celda:hover { background: var(--surface-2); }
 .celda.otro-mes { opacity: .42; }
-.celda .numero { font-size: 12.5px; color: var(--ink-faint); font-variant-numeric: tabular-nums; align-self: flex-start; padding: 1px 5px; border-radius: 999px; }
+.celda .numero { font-size: 12.5px; color: var(--ink-soft); font-variant-numeric: tabular-nums; align-self: flex-start; padding: 1px 5px; border-radius: 999px; }
 .celda.hoy .numero { background: var(--violet); color: var(--on-violet); font-weight: 700; }
 .celda[aria-current="true"] { outline: 2px solid var(--violet); outline-offset: -2px; }
 
@@ -290,7 +290,6 @@ dl { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(21
 .chip-sesion .hora { font-variant-numeric: tabular-nums; color: var(--ink-faint); }
 .chip-sesion .quien-chip { overflow: hidden; text-overflow: ellipsis; }
 .chip-sesion.realizada { border-left-color: var(--dato-3); }
-.chip-sesion.ausente   { border-left-color: var(--dato-2); }
 .chip-sesion.cancelada { border-left-color: var(--dato-neutro); text-decoration: line-through; opacity: .65; }
 .mas-sesiones { font-size: 11px; color: var(--ink-faint); padding-left: 6px; }
 
@@ -312,13 +311,40 @@ dl { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(21
 }
 .editor h3 {
   font-family: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
-  font-size: 17px; margin: 0; letter-spacing: .02em; color: var(--ink);
+  font-size: 19px;
+  margin: 0 0 2px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  letter-spacing: .02em;
+  color: var(--ink);
 }
-.editor .pareja { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.editor .pie-editor { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
-.editor .pie-editor .derecha { margin-left: auto; display: flex; gap: 10px; }
-.editor .marca-pago { display: flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 500; cursor: pointer; }
+.editor .pareja { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 480px) { .editor .pareja { grid-template-columns: 1fr; } }
+
+/* El monto y si ya se cobró son una sola idea: van en la misma línea, con la
+   casilla alineada a la base del campo y no flotando arriba. */
+.editor .cobro {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: end;
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+.editor .marca-pago {
+  display: flex; align-items: center; gap: 9px;
+  font-size: 14px; font-weight: 500; cursor: pointer;
+  padding-bottom: 11px; white-space: nowrap;
+}
 .editor .marca-pago input { width: 17px; height: 17px; accent-color: var(--violet); margin: 0; }
+
+.editor .pie-editor {
+  display: flex; gap: 10px; align-items: center;
+  margin-top: 6px; padding-top: 16px; border-top: 1px solid var(--line);
+}
+.editor .pie-editor .derecha { margin-left: auto; display: flex; gap: 10px; }
 
 /* ---------- Reportes y gráficos ---------- */
 

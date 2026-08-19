@@ -5,7 +5,7 @@
 
 import { crear, paraInputLocal } from "../formato.js";
 import { estado, guardarSesion, borrarSesion } from "../datos.js";
-import { SESION_ESTADOS, DURACIONES } from "../ficha.js";
+import { SESION_ESTADOS } from "../ficha.js";
 
 let velo, formulario, campos, alGuardar;
 let sesionActual = null;
@@ -29,7 +29,7 @@ function construir() {
   envPaciente.append(paciente);
   cPaciente.append(lPaciente, envPaciente);
 
-  // Cuándo y cuánto dura
+  // Cuándo se hace y en qué anda
   const pareja1 = crear("div", "pareja");
   const cCuando = crear("div", "field");
   const lCuando = crear("label", null, "Fecha y hora");
@@ -39,24 +39,6 @@ function construir() {
   cuando.id = "s-cuando";
   cCuando.append(lCuando, cuando);
 
-  const cDuracion = crear("div", "field");
-  const lDuracion = crear("label", null, "Duración");
-  lDuracion.htmlFor = "s-duracion";
-  const envDuracion = crear("div", "select");
-  const duracion = document.createElement("select");
-  duracion.id = "s-duracion";
-  DURACIONES.forEach(m => {
-    const op = document.createElement("option");
-    op.value = m;
-    op.textContent = m + " min";
-    duracion.append(op);
-  });
-  envDuracion.append(duracion);
-  cDuracion.append(lDuracion, envDuracion);
-  pareja1.append(cCuando, cDuracion);
-
-  // Estado y arancel
-  const pareja2 = crear("div", "pareja");
   const cEstado = crear("div", "field");
   const lEstado = crear("label", null, "Estado");
   lEstado.htmlFor = "s-estado";
@@ -71,7 +53,10 @@ function construir() {
   });
   envEstado.append(estadoSel);
   cEstado.append(lEstado, envEstado);
+  pareja1.append(cCuando, cEstado);
 
+  // Cobro: el monto y si ya entró van juntos, es una sola idea
+  const cobro = crear("div", "cobro");
   const cArancel = crear("div", "field");
   const lArancel = crear("label", null, "Arancel");
   lArancel.htmlFor = "s-arancel";
@@ -80,17 +65,17 @@ function construir() {
   arancel.id = "s-arancel";
   arancel.min = "0";
   arancel.step = "100";
+  arancel.inputMode = "numeric";
   arancel.placeholder = "Opcional";
   cArancel.append(lArancel, arancel);
-  pareja2.append(cEstado, cArancel);
 
-  // Pago
   const pago = crear("label", "marca-pago");
   const pagada = document.createElement("input");
   pagada.type = "checkbox";
   pagada.id = "s-pagada";
   pago.htmlFor = "s-pagada";
   pago.append(pagada, document.createTextNode("Ya está paga"));
+  cobro.append(cArancel, pago);
 
   // Notas
   const cNotas = crear("div", "field");
@@ -115,10 +100,10 @@ function construir() {
   derecha.append(cancelar, guardar);
   pie.append(borrar, derecha);
 
-  formulario.append(titulo, cPaciente, pareja1, pareja2, pago, cNotas, error, pie);
+  formulario.append(titulo, cPaciente, pareja1, cobro, cNotas, error, pie);
   document.body.append(velo);
 
-  campos = { titulo, paciente, cuando, duracion, estadoSel, arancel, pagada, notas, error, borrar, guardar };
+  campos = { titulo, paciente, cuando, estadoSel, arancel, pagada, notas, error, borrar, guardar };
 
   cancelar.addEventListener("click", cerrar);
   velo.addEventListener("mousedown", e => { if (e.target === velo) cerrar(); });
@@ -136,7 +121,6 @@ function construir() {
     const payload = {
       ficha_id: campos.paciente.value,
       inicia_en: new Date(campos.cuando.value).toISOString(),
-      duracion_min: Number(campos.duracion.value),
       estado: campos.estadoSel.value,
       arancel: campos.arancel.value === "" ? null : Number(campos.arancel.value),
       pagada: campos.pagada.checked,
@@ -215,7 +199,6 @@ export function abrirEditorSesion({ sesion = null, fecha = null, fichaId = null,
   if (sesion) {
     campos.paciente.value = sesion.ficha_id;
     campos.cuando.value = paraInputLocal(sesion.inicia_en);
-    campos.duracion.value = String(sesion.duracion_min);
     campos.estadoSel.value = sesion.estado;
     campos.arancel.value = sesion.arancel ?? "";
     campos.pagada.checked = Boolean(sesion.pagada);
@@ -225,7 +208,6 @@ export function abrirEditorSesion({ sesion = null, fecha = null, fichaId = null,
     if (fecha) base.setHours(10, 0, 0, 0);
     campos.paciente.value = fichaId || "";
     campos.cuando.value = paraInputLocal(base.toISOString());
-    campos.duracion.value = "60";
     campos.estadoSel.value = "programada";
     campos.arancel.value = "";
     campos.pagada.checked = false;
